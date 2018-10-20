@@ -1,8 +1,9 @@
 """
 UNIVERSIDAD NACIONAL DE COLOMBIA
-Analizador Lexico lenguaje T
-Mie,28 de feb
+Analizador Z80
+SAb,20 de Oct
 Jorge Ivan Torres Candia
+Daniel Caita
 """
 import sys
 
@@ -76,31 +77,20 @@ dicPalabrasreservadas = {
     'SBC':'SBC',
     'SCF':'SCF',
     'SET':'SET',
-    'LDI':'LDI',
+    'SLA':'SLA',
+    'SRA':'SRA',
+    'SLR':'SLR',
+    'SUB':'SUB',
+    'XOR':'XOR'
 }
 
-#Diccionario de Letras del alfabeto mayusculas  minusculas
-Abc =['a','b','c','d','e','f','g','h','i','j','k','l','m',
-    'n','o','p','q','r','s','t','u','v','w','x','y','z',
-    'A','B','C','D','E','F','G','H','I','J','K','L','M',
+#Diccionario de Letras del alfabeto mayusculas
+Abc =['A','B','C','D','E','F','G','H','I','J','K','L','M',
     'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 #Diccionario de numeros
 Numero = ['0','1','2','3','4','5','6','7','8','9']
 
-#Funcion para verificar si un token es del tipo flotante
-#Recibe un string y returna un 1 o -1 dependdiendo del resultado
-def isfloat(s):
-    count=0
-    aux=''
-    for i in s:
-        if i.isdigit():
-            aux +=i
-        elif i == '.' and count == 0:
-            aux += i
-        else:
-            return -1
-    return 1
 
 #Funcion para concatenar la respuesta
 #Recibe una serie de strings y retorna el string resultante de la concatenacion
@@ -205,28 +195,10 @@ def lector (linea):
     flag_string = False
     l=list()
     for i in linea:
-        if i == "\n" or i == "\t":
-            if string_Temporal != '':
-                l.append(string_Temporal)
-            string_Temporal = ''
-        if i == '"':
-            if flag_string == False:
-                if string_Temporal != '' :
-                    l.append(string_Temporal)
-                    string_Temporal = ''
-                flag_string = True
-                string_Temporal += i
-                continue
-            elif flag_string == True:
-                string_Temporal += i
-                l.append(string_Temporal)
-                string_Temporal = ''
-                flag_string = False
-                continue
         if flag_string == True:
             string_Temporal += i
         else:
-            if i == " " or i == "\t" or i == "\r":
+            if i == " ":
                 l.append(string_Temporal)
                 string_Temporal = ''
                 l.append(" ")
@@ -279,11 +251,9 @@ def lector (linea):
     return l
 
 #Main del programa
-num_columna=1
-f= sys.stdin.readlines()
-for line in f:
-    linea = line
-    l=lector(linea)
-    if Lexema(l,num_columna) == -1:
-        break
-    num_columna = num_columna + 1
+
+instr = sys.stdin.readlines()
+l=lector(instr)
+if Lexema(l,num_columna) == -1:
+    break
+num_columna = num_columna + 1

@@ -3,6 +3,7 @@
 # 11 De Octubre del 2018
 # Emulador Procesador Z80
 # Jorge Ivan Torres
+# Daniel Caita
 # *************************
 
 #Tomar opcode
