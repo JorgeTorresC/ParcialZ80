@@ -145,7 +145,7 @@ def tipo(w):
 #mirando el tipo de token que puede llegar a ser el objeto en la lista,
 #Imprime en pantalla el tipo de token que clasifica
 def Lexema( l ):
-    itx = list() #Instruccion a ejecutar
+    global itx #Instruccion a ejecutar
     aux = ''
     answer = ''
     col = 1
@@ -157,43 +157,18 @@ def Lexema( l ):
 
         w = tipo(i)
         if w == "token_operadores":
-            answer = do_answer('<', dic_operadores[i], ',', str(col), '>')
-            print (answer)
-            col=col+len(i)
+            itx.append(dic_operadores[i])
         elif w == "token_palabras":
-            answer = do_answer('<', dicPalabrasreservadas[i], ',', str(col), '>')
-            print(answer)
-            col=col+len(i)
+            itx.append(dicPalabrasreservadas[i])
         elif w == "Num_entero":
-            answer = do_answer('<token_integer,', i, ',', str(col), '>')
-            print(answer)
-            col=col+len(i)
-        elif w == "String":
-            aux = i.split('"')
-            answer = do_answer('<token_string,', aux[1], ',', str(col), '>')
-            print(answer)
-            col = col + len(i)
-        elif w == "Num_flotante":
-            answer = do_answer('<token_float,', i, ',', str(col), '>')
-            print(answer)
-            col=col+len(i)
+            itx.append(i)
         elif w == "Id":
-            answer = do_answer('<id,', i, ',', str(col), '>')
-            print(answer)
-            col=col+len(i)
+            itx.append(i)
         elif w == "Num_Hexadecimal":
-            answer = do_answer('<token_hex,', i, ',', str(col), '>')
-            print(answer)
-            col=col+len(i)
+            itx.append(i)
         elif w == "Error_Lexico":
-            answer = ">>> Error lexico(linea:"
-            answer += ',posicion:'
-            answer += str(col)
-            answer += ')'
-            print(answer)
+            answer = ">>> Error lexico"
             flag = True
-        elif w == "espacio":
-            col=col+1
     if flag == False:
         return 1
     else:
@@ -262,9 +237,13 @@ print(len(aux))
 print(l)
 Lexema(l)
 """
-f= sys.stdin.readlines()
+
+f = sys.stdin.readlines()
 for line in f:
+    itx = list()
     linea = line
     l=lector(linea)
-    print(l)
-    Lexema(l)
+    #print(l)
+    if Lexema(l) == -1:
+        break
+    print(itx, len(itx))
