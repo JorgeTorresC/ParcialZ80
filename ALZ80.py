@@ -11,25 +11,33 @@ import sys
 dic_operadores = {
     '(':'token_par_izq',
     ')':'token_par_der',
-    ',':'token_coma'
+    '[':'token_cor_izq',
+    ']':'token_cor_der',
+    '+':'token_mas',
+    '=':'token_igual',
+    '-':'token_menos',
+    '%':'token_base2',
+    ';':'token_punto_y_coma',
+    ',':'token_coma',
+    "'":'token_apostrofe'
 }
 
 #Diccionario de las palabras reservadas del lenguaje
 dicPalabrasreservadas = {
-    'ADC':'true',
-    'ADD':'false',
-    'AND':'nil',
-    'BIT':'if',
-    'CALL':'else',
-    'CCF':'while',
-    'CP':'log',
-    'CPD':'for',
-    'CPDR':'funcion',
-    'CPI':'end',
-    'CPIR':'retorno',
-    'CPL':'importar',
-    'DAA':'desde',
-    'DEC':"todo",
+    'ADC':'ADC',
+    'ADD':'ADD',
+    'AND':'AND',
+    'BIT':'BIT',
+    'CALL':'CALL',
+    'CCF':'CCF',
+    'CP':'CP',
+    'CPD':'CPD',
+    'CPDR':'CDPR',
+    'CPI':'CPI',
+    'CPIR':'CIR',
+    'CPL':'CPL',
+    'DAA':'DAA',
+    'DEC':"DEC",
     'DI':'DI',
     'DJNZ':'DJNZ',
     'EI':'EI',
@@ -94,14 +102,12 @@ Numero = ['0','1','2','3','4','5','6','7','8','9']
 
 #Funcion para concatenar la respuesta
 #Recibe una serie de strings y retorna el string resultante de la concatenacion
-def do_answer(s1, s2, s3, s4, s5, s6, s7):
+def do_answer(s1, s2, s3, s4, s5):
     answer = s1
     answer += s2
     answer += s3
     answer += s4
     answer += s5
-    answer += s6
-    answer += s7
     return answer
 
 
@@ -120,8 +126,6 @@ def tipo(w):
         return "Num_entero"
     elif w.find('"') != -1:
         return "String"
-    elif isfloat(w) == 1:
-        return "Num_flotante"
     elif w.isalpha(): # True si "pepegrillo"
         return "Id"
     elif w.isalnum(): #True si "pepegrillo75"
@@ -135,44 +139,42 @@ def tipo(w):
 #Revisa la lista de posibles tokens
 #mirando el tipo de token que puede llegar a ser el objeto en la lista,
 #Imprime en pantalla el tipo de token que clasifica
-def Lexema( l, fil ):
+def Lexema( l ):
     aux = ''
     answer = ''
     col = 1
     flag = False
     for i in l:
         if i == "#":
-            fil = fil + 1
             break
         w = tipo(i)
         if w == "token_operadores":
-            answer = do_answer('<', dic_operadores[i], ',' ,str(fil), ',', str(col), '>')
+            answer = do_answer('<', dic_operadores[i], ',', str(col), '>')
             print (answer)
             col=col+len(i)
         elif w == "token_palabras":
-            answer = do_answer('<', dicPalabrasreservadas[i], ',' ,str(fil), ',', str(col), '>')
+            answer = do_answer('<', dicPalabrasreservadas[i], ',', str(col), '>')
             print(answer)
             col=col+len(i)
         elif w == "Num_entero":
-            answer = do_answer('<token_integer,', i, ',' ,str(fil), ',', str(col), '>')
+            answer = do_answer('<token_integer,', i, ',', str(col), '>')
             print(answer)
             col=col+len(i)
         elif w == "String":
             aux = i.split('"')
-            answer = do_answer('<token_string,', aux[1], ',' ,str(fil), ',', str(col), '>')
+            answer = do_answer('<token_string,', aux[1], ',', str(col), '>')
             print(answer)
             col = col + len(i)
         elif w == "Num_flotante":
-            answer = do_answer('<token_float,', i, ',' ,str(fil), ',', str(col), '>')
+            answer = do_answer('<token_float,', i, ',', str(col), '>')
             print(answer)
             col=col+len(i)
         elif w == "Id":
-            answer = do_answer('<id,', i, ',' ,str(fil), ',', str(col), '>')
+            answer = do_answer('<id,', i, ',', str(col), '>')
             print(answer)
             col=col+len(i)
         elif w == "Error_Lexico":
             answer = ">>> Error lexico(linea:"
-            answer += str(fil)
             answer += ',posicion:'
             answer += str(col)
             answer += ')'
@@ -188,13 +190,17 @@ def Lexema( l, fil ):
 #Leer caracter por caracter
 #Separa los tokens por espacio o por aparicion de palabras reservadas u operadores
 #Genera una lista de posibles tokens por cada linea
-
 def lector (linea):
-    linea.lower()
     string_Temporal = ''
     flag_string = False
     l=list()
     for i in linea:
+        #print (i)
+        if i == "\n" or i == "\t":
+            if string_Temporal != '':
+                l.append(string_Temporal)
+            string_Temporal = ''
+
         if flag_string == True:
             string_Temporal += i
         else:
@@ -203,25 +209,8 @@ def lector (linea):
                 string_Temporal = ''
                 l.append(" ")
             elif i in dic_operadores:
-                if string_Temporal != '' and string_Temporal not in dic_operadores:
-                    if string_Temporal.isdigit() and i == '.':
-                        string_Temporal += i
-                        continue
-                    else:
-                        l.append(string_Temporal)
-                        string_Temporal = ''
-                elif string_Temporal != '' and string_Temporal in dic_operadores:
-                    if (string_Temporal + i) in dic_operadores:
-                        string_Temporal += i
-                        l.append(string_Temporal)
-                        string_Temporal = ''
-                        continue
-                    else:
-                        l.append(string_Temporal)
-                        string_Temporal = ''
-                string_Temporal += i
-                continue
-            elif (string_Temporal in dic_operadores) and string_Temporal != "in":
+                l.append(i)
+            elif string_Temporal in dic_operadores:
                 l.append(string_Temporal)
                 string_Temporal = ''
                 string_Temporal += i
@@ -231,14 +220,6 @@ def lector (linea):
                 string_Temporal += i
             elif ( i.isdigit() )  and string_Temporal.isdigit() and string_Temporal != '':
                 string_Temporal += i
-            elif isfloat(string_Temporal)==1 and ( not( i.isdigit() ) and string_Temporal != ''):
-                l.append(string_Temporal)
-                string_Temporal = ''
-                string_Temporal += i
-            elif (string_Temporal + i) in dic_operadores:
-                string_Temporal += i
-                l.append(string_Temporal)
-                string_Temporal = ''
             elif i not in Abc and i not in Numero:
                 l.append(string_Temporal)
                 string_Temporal = ''
@@ -251,9 +232,17 @@ def lector (linea):
     return l
 
 #Main del programa
-
+"""
 instr = sys.stdin.readlines()
-l=lector(instr)
-if Lexema(l,num_columna) == -1:
-    break
-num_columna = num_columna + 1
+aux=instr
+l=lector(aux)
+print(len(aux))
+print(l)
+Lexema(l)
+"""
+f= sys.stdin.readlines()
+for line in f:
+    linea = line
+    l=lector(linea)
+    print(linea)
+    Lexema(l)

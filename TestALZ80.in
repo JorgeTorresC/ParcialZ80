@@ -1,0 +1,15 @@
+; ADD A, s
+ADD A, B        ; A = A + B
+ADD A, 100      ; A = A + 100
+ADD A, [HL]     ; A = A + [HL]
+ADD A, [IX+10]  ; A = A + [IX+10]
+
+; ADD HL, ss
+ADD HL, BC      ; HL = HL + BC
+ADD HL, SP      ; HL = HL + SP
+
+; ADD ri, rr
+ADD IX, BC      ; IX = IX + BC
+ADD IY, DE      ; IY = IY + DE
+ADD IY, IX      ; IY = IY + IX
+ADD IX, IY      ; IX = IX + IY
