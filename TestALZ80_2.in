@@ -1,0 +1,13 @@
+LD C, $00       ; C vale 0
+LD B, $01       ; B vale 1
+                ; con esto, BC = $0100
+LD A, B         ; A ahora vale 1
+LD HL, $1234    ; HL vale $1234 o 4660d
+LD A, (HL)      ; A contiene el valor de (4660)
+LD A, (16384)   ; A contiene el valor de (16384)
+LD (16385), A   ; Escribimos en (16385) el valor de A
+ADD A, B        ; Suma: A = A + B
+INC B           ; Incrementamos B (B = 1+1 =2)
+                ; Ahora BC vale $0200
+INC BC          ; Incrementamos BC
+                ; (BC = $0200+1 = $0201)

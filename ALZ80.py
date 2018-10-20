@@ -19,7 +19,8 @@ dic_operadores = {
     '%':'token_base2',
     ';':'token_punto_y_coma',
     ',':'token_coma',
-    "'":'token_apostrofe'
+    "'":'token_apostrofe',
+    '$':'token_pesos'
 }
 
 #Diccionario de las palabras reservadas del lenguaje
@@ -93,7 +94,9 @@ dicPalabrasreservadas = {
 }
 
 #Diccionario de Letras del alfabeto mayusculas
-Abc =['A','B','C','D','E','F','G','H','I','J','K','L','M',
+Abc =['a','b','c','d','e','f','g','h','i','j','k','l','m',
+    'n','o','p','q','r','s','t','u','v','w','x','y','z',
+    'A','B','C','D','E','F','G','H','I','J','K','L','M',
     'N','O','P','Q','R','S','T','U','V','W','X','Y','Z']
 
 #Diccionario de numeros
@@ -133,6 +136,8 @@ def tipo(w):
             return "Error_Lexico"
         else:
             return "Id"
+    elif w[0] == '$':
+        return "Num_Hexadecimal"
     else:
         return "Error_Lexico"
 
@@ -140,13 +145,16 @@ def tipo(w):
 #mirando el tipo de token que puede llegar a ser el objeto en la lista,
 #Imprime en pantalla el tipo de token que clasifica
 def Lexema( l ):
+    itx = list() #Instruccion a ejecutar
     aux = ''
     answer = ''
     col = 1
     flag = False
     for i in l:
-        if i == "#":
+        #Ignora los comentarios
+        if i == ";":
             break
+
         w = tipo(i)
         if w == "token_operadores":
             answer = do_answer('<', dic_operadores[i], ',', str(col), '>')
@@ -171,6 +179,10 @@ def Lexema( l ):
             col=col+len(i)
         elif w == "Id":
             answer = do_answer('<id,', i, ',', str(col), '>')
+            print(answer)
+            col=col+len(i)
+        elif w == "Num_Hexadecimal":
+            answer = do_answer('<token_hex,', i, ',', str(col), '>')
             print(answer)
             col=col+len(i)
         elif w == "Error_Lexico":
@@ -205,11 +217,20 @@ def lector (linea):
             string_Temporal += i
         else:
             if i == " ":
-                l.append(string_Temporal)
-                string_Temporal = ''
-                l.append(" ")
+                if string_Temporal != '':
+                    l.append(string_Temporal)
+                    string_Temporal = ''
+                #l.append(" ")
             elif i in dic_operadores:
-                l.append(i)
+                if i == '$':
+                    string_Temporal += i
+                    continue
+                else:
+                    l.append(string_Temporal)
+                    string_Temporal = ''
+                    l.append(i)
+            elif string_Temporal.find('$') != -1 and i.isdigit():
+                string_Temporal += i
             elif string_Temporal in dic_operadores:
                 l.append(string_Temporal)
                 string_Temporal = ''
@@ -224,6 +245,7 @@ def lector (linea):
                 l.append(string_Temporal)
                 string_Temporal = ''
                 string_Temporal += i
+
             else:
                 string_Temporal +=i
     if string_Temporal != '' and string_Temporal !='\n':
@@ -244,5 +266,5 @@ f= sys.stdin.readlines()
 for line in f:
     linea = line
     l=lector(linea)
-    print(linea)
+    print(l)
     Lexema(l)
