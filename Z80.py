@@ -16,7 +16,7 @@ F_p = ['0','0','0','0','0','0','0']
 #F = '00000000'  #8bits
 
 #Primer banco
-A = '10101100'          #8bits
+A = ''          #8bits
 B = ''          #8bits
 C = ''          #8bits
 D = ''          #8bits
@@ -1145,7 +1145,7 @@ def AND_A0():
     global A
     global B
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and B[i] == '1':
             aux += '1'
         else:
@@ -1157,7 +1157,7 @@ def AND_A1():
     global A
     global C
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and C[i] == '1':
             aux += '1'
         else:
@@ -1169,7 +1169,7 @@ def AND_A2():
     global A
     global D
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and D[i] == '1':
             aux += '1'
         else:
@@ -1181,7 +1181,7 @@ def AND_A3():
     global A
     global E
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and E[i] == '1':
             aux += '1'
         else:
@@ -1193,7 +1193,7 @@ def AND_A4():
     global A
     global H
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and H[i] == '1':
             aux += '1'
         else:
@@ -1205,7 +1205,7 @@ def AND_A5():
     global A
     global L
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and L[i] == '1':
             aux += '1'
         else:
@@ -1217,7 +1217,7 @@ def AND_A6():
     global A
     global HL
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and HL[i+8] == '1':
             aux += '1'
         else:
@@ -1231,7 +1231,7 @@ def XOR_A8():
     global A
     global B
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and B[i] == '0':
             aux += '1'
         elif A[i] == '0' and B[i] == '1':
@@ -1245,7 +1245,7 @@ def XOR_A9():
     global A
     global C
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and C[i] == '0':
             aux += '1'
         elif A[i] == '0' and C[i] == '1':
@@ -1259,7 +1259,7 @@ def XOR_AA():
     global A
     global D
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and D[i] == '0':
             aux += '1'
         elif A[i] == '0' and D[i] == '1':
@@ -1273,7 +1273,7 @@ def XOR_AB():
     global A
     global E
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and E[i] == '0':
             aux += '1'
         elif A[i] == '0' and E[i] == '1':
@@ -1287,7 +1287,7 @@ def XOR_AC():
     global A
     global H
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and H[i] == '0':
             aux += '1'
         elif A[i] == '0' and H[i] == '1':
@@ -1301,7 +1301,7 @@ def XOR_AD():
     global A
     global L
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and L[i] == '0':
             aux += '1'
         elif A[i] == '0' and L[i] == '1':
@@ -1315,7 +1315,7 @@ def XOR_AE():
     global A
     global HL
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and HL[i+8] == '0':
             aux += '1'
         elif A[i] == '0' and HL[i+8] == '1':
@@ -1334,7 +1334,7 @@ def OR_B0():
     global A
     global B
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or B[i] == '1':
             aux += '1'
         else:
@@ -1347,7 +1347,7 @@ def OR_B1():
     global A
     global C
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or C[i] == '1':
             aux += '1'
         else:
@@ -1359,7 +1359,7 @@ def OR_B2():
     global A
     global D
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or D[i] == '1':
             aux += '1'
         else:
@@ -1371,7 +1371,7 @@ def OR_B3():
     global A
     global E
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or E[i] == '1':
             aux += '1'
         else:
@@ -1383,7 +1383,7 @@ def OR_B4():
     global A
     global H
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or H[i] == '1':
             aux += '1'
         else:
@@ -1395,7 +1395,7 @@ def OR_B5():
     global A
     global L
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or L[i] == '1':
             aux += '1'
         else:
@@ -1407,7 +1407,7 @@ def OR_B6():
     global A
     global HL
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or HL[i+8] == '1':
             aux += '1'
         else:
@@ -1567,7 +1567,7 @@ def PUSH_E5():
 def AND_E6(arg):
     global A
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and arg[i] == '1':
             aux += '1'
         else:
@@ -1577,7 +1577,7 @@ def AND_E6(arg):
 def XOR_EE(arg):
     global A
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' and arg[i] == '0':
             aux += '1'
         elif A[i] == '0' and arg[i] == '1':
@@ -1633,7 +1633,7 @@ def PUSH_F5():
 def OR_F6(arg):
     global A
     aux = ''
-    for i in range(len(A))
+    for i in range(len(A)):
         if A[i] == '1' or arg[i] == '1':
             aux += '1'
         else:
@@ -1657,7 +1657,7 @@ print("B",B)
 LD_06('10101110')
 print("B",B)
 ADD_09()
-print("HL",HL)"""
+print("HL",HL)
 print("A",A, type(A))
 CPL_2F()
-print("A",A)
+print("A",A)"""

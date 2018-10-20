@@ -237,13 +237,3 @@ print(len(aux))
 print(l)
 Lexema(l)
 """
-
-f = sys.stdin.readlines()
-for line in f:
-    itx = list()
-    linea = line
-    l=lector(linea)
-    #print(l)
-    if Lexema(l) == -1:
-        break
-    print(itx, len(itx))
