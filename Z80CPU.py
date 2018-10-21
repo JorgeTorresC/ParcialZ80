@@ -64,11 +64,11 @@ def ld(opA, opB):
 
 def inc(opA):
     varInc = registros[opA]
-    if len(opA) == 8:
+    if len(varInc) == 8:
         aux = int(varInc,2) + int('1',2)
         varInc = Rell_Zeros(bin(aux))
         registros[apA] = varInc
-    elif len(opA) == 16:
+    elif len(varInc) == 16:
         p1 = varInc[0:8]
         P2 = varInc[8:16]
         if p2 == '11111111':
@@ -88,11 +88,11 @@ def inc(opA):
     # TODO: Incrementar Funcion
 def dec(opA):
     varDec = registros[opA]
-    if len(opA) == 8:
+    if len(varDec) == 8:
         aux = int(varDec,2) - int('1',2)
         varDec = Rell_Zeros(bin(aux))
         registros[apA] = varDec
-    elif len(opA) == 16:
+    elif len(varDec) == 16:
         p1 = varDec[0:8]
         P2 = varDec[8:16]
         if p2 == '00000000':
@@ -110,8 +110,71 @@ def dec(opA):
 
     # TODO: Decrementar Funcion
 
+def rlca():
+    aux = registros[A]
+    corr = aux[1:8] + aux[0]
+    registros[A] = corr
+    #aux[1] = F[7]
 
+def ex(opA, opB):
+    aux = registros[opA]
+    registros[opA] = registros[opB]
+    registros[opB] = aux
+    #flags
+    update()
 
+def add(opA, opB):
+    varA = registros[opA]
+    varB = registros[opB]
+    if len(varA) == 8 and len(varB) == 8:
+        aux = int(varA,2) + int(varB,2)
+        varA = Rell_Zeros(bin(aux))
+        registros[apA] = varA
+    elif len(varA) == 16 len(varB) == 8:
+        p1 = varA[0:8]
+        P2 = varA[8:16]
+        aux1 = int(p2,2) + int(varB,2)
+        p2 = Rell_Zeros(bin(aux1))
+        aux2 = int(p1,2) + int('1',2)
+        p1 = Rell_Zeros(bin(aux2))
+        varA = ''
+        varA = p1 + p2
+        registros[apA] = varA
+    elif len(varA) == 16 len(varB) == 16:
+        p1 = varA[0:8]
+        P2 = varA[8:16]
+        q1 = varB[0:8]
+        q2 = varB[8:16]
+        aux1 = int(p2,2) + int(q2,2)
+        if aux1 > 255:
+            p2 = Rell_Zeros(bin(aux1))
+            aux2 = int(p1,2) + int('1',2)
+            aux2 = aux2 + int(q1,2)
+            p1 = Rell_Zeros(bin(aux2))
+        else:
+            p2 = Rell_Zeros(bin(aux1))
+            aux2 = aux2 + int(q1,2)
+            p1 = Rell_Zeros(bin(aux2))
+        varA = ''
+        varA = p1 + p2
+        registros[apA] = varA
+        #hacer update para apA de 16 bits
+
+def rrca():
+    aux = registros[A]
+    corr = aux[7] + aux[0:7]
+    registros[A] = aux
+    #aux[1] = F[7]
+
+def rla():
+    global F
+    aux = registros[A]
+    corr = aux[1:8] + F[7]
+    F[7] = aux[0]
+    registros[A] = corr
+
+#------------------------------------
+#------------------------------------
 def update():
     registros['BC'] = registros['B'] + registros['C']
     registros['DE'] = registros['D'] + registros['E']
@@ -215,10 +278,12 @@ dic={'1':suma(var1,var2),'2':resta(arg)}
 print('diccionario de funciones', dic['1'])
 
 """
+#variables para pasar a las funciones
+arg1,arg2 = '',''
 
 dicFunciones = {
     'ADC':'ADC',
-    'ADD':'ADD',
+    'ADD':add(arg1, arg2),
     'AND':'AND',
     'BIT':'BIT',
     'CALL':'CALL',
@@ -230,23 +295,23 @@ dicFunciones = {
     'CPIR':'CIR',
     'CPL':'CPL',
     'DAA':'DAA',
-    'DEC':"DEC",
+    'DEC':dec(arg1),
     'DI':'DI',
     'DJNZ':'DJNZ',
     'EI':'EI',
-    'EX':'EX',
+    'EX':ex(arg1, arg2),
     'EXX':'EXX',
     'HALT':'HALT',
     'IM':'IM',
     'IN':'IN',
-    'INC':'INC',
+    'INC':inc(arg1),
     'IND':'IND',
     'INDR':'INDR',
     'INI':'INI',
     'INIR':'INIR',
     'JP':'JP',
     'JR':'JR',
-    'LD':ld(ld1, ld2),
+    'LD':ld(arg1, arg2),
     'LDD':'LDD',
     'LDDR':'LDDR',
     'LDI':'LDI',
@@ -265,14 +330,14 @@ dicFunciones = {
     'RETI':'RETI',
     'RETN':'RETN',
     'RL':'RL',
-    'RLA':'RLA',
+    'RLA':rla(),
     'RLC':'RLC',
-    'RLCA':'RLCA',
+    'RLCA':rlca(),
     'RLD':'RLD',
     'RR':'RR',
     'RRA':'RRA',
     'RRC':'RRC',
-    'RRCA':'RRCA',
+    'RRCA':rrca(),
     'RRD':'RRD',
     'RST':'RST',
     'SBC':'SBC',
