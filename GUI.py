@@ -1,13 +1,17 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# *************************
+# 11 De Octubre del 2018
+# Emulador Procesador Z80
+# Jorge Ivan Torres
+# Daniel Caita
+# *************************
 
 from tkinter import *
 from tkinter import ttk
 import getpass
 
-
-auxY=50
 instruccion = ''
+
 class Aplicacion():
     def __init__(self):
 
@@ -30,14 +34,13 @@ class Aplicacion():
         self.raiz.mainloop()
 
     def verCOMANDO(self):
-        global auxY, instruccion
+        global instruccion
         instruccion = self.into.get()
-        lbl=Label(text = 'Comando: ' + instruccion,
-        bg='grey').place(x=18, y=auxY)
-        auxY = auxY + 20
+        limp = "                           "
+        lblsaludar = Label(text = limp).place(x = 18, y = 50)
+        lbl = Label(text = 'Comando: ' + instruccion,
+        bg = 'grey').place(x = 18, y = 50)
         #print(type(instruccion))
-        if auxY >330:
-            auxY = 50
 
 #Main_temp
 def main():
