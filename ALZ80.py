@@ -16,11 +16,11 @@ dic_operadores = {
     '+':'token_mas',
     '=':'token_igual',
     '-':'token_menos',
-    '%':'token_base2',
+    '%':'token_base2',#Binarios 
     ';':'token_punto_y_coma',
     ',':'token_coma',
     "'":'token_apostrofe',
-    '$':'token_pesos'
+    '$':'token_pesos'#Hexadecimales
 }
 
 #Diccionario de las palabras reservadas del lenguaje
