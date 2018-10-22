@@ -306,7 +306,7 @@ def execute(instr):
                     add('HL', 'SP')
 
         # Indirect loading
-        if z == '010':Por
+        if z == '010':
             if q == '0':
                 if p == '00':
                     memory['BC'] = registros['A']
