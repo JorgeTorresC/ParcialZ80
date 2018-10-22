@@ -1,42 +1,49 @@
+# -*- coding: utf-8 -*-
+# *************************
+# 21 De Octubre del 2018
+# Emulador Procesador Z80
+# Jorge Ivan Torres
+# Daniel Caita
+# *************************
+add
 from Funcions import *
+
+registros = {
+    #Registros de Proposito General
+    'A'    : '' ,         #8bits -> Acumulador
+    'B'    : '',          #8bits
+    'C'    : '',          #8bits
+    'D'    : '',          #8bits
+    'E'    : '',          #8bits
+    'H'    : '',          #8bits
+    'L'    : '',          #8bits
+    'BC'   : '',          #16bits
+    'DE'   : '',          #16bits
+    'HL'   : '',          #16bits
+    'AF'   : '',          #16bits
+    'A_p'  : '',          #8bits
+    'B_p'  : '',          #8bits
+    'C_p'  : '',          #8bits
+    'D_p'  : '',          #8bits
+    'E_p'  : '',          #8bits
+    'H_p'  : '',          #8bits
+    'L_p'  : '',          #8bits
+    'BC_p' : '',          #16bits
+    'DE_p' : '',          #16bits
+    'HL_p' : '',          #16bits
+    'AF_p' : '',          #16bits
+    #Registros de Proposito Especial
+    'PC'   : '',          #16bits Program counter
+    'SP'   : '',          #16bits Stack Pounter
+    'IX'   : '',          #16bits Index Register X
+    'IY'   : '',          #16bits Index Register Y
+    'R'    : '',          #8bits Refresh
+    'I'    : ''           #8bits Interrupciones
+}
 
 #Banderas <|S|Z|-|H|-|P|N|C|>
 F = '00000000'
 F_p = '00000000'  #8bits
-
-registros = {
-    #Registros de Proposito General
-    'A'  : '11',        #8bits
-    'B'  : '00',        #8bits
-    'C'  : '',          #8bits
-    'D'  : '',          #8bits
-    'E'  : '',          #8bits
-    'H'  : '',          #8bits
-    'L'  : '',          #8bits
-    'BC' : '',          #16bits
-    'DE' : '',          #16bits
-    'HL' : '',          #16bits
-    'AF' : '',          #16bits
-    'A_p'  : '',        #8bits
-    'B_p'  : '',        #8bits
-    'C_p'  : '',        #8bits
-    'D_p'  : '',        #8bits
-    'E_p'  : '',        #8bits
-    'H_p'  : '',        #8bits
-    'L_p'  : '',        #8bits
-    'BC_p' : '',        #16bits
-    'DE_p' : '',        #16bits
-    'HL_p' : '',        #16bits
-    'AF_p' : '',         #16bits
-    #Registros de Proposito Especial
-    'PC' : '',          #16bits Program counter
-    'SP' : '',          #16bits Stack Pounter
-    'IX' : '',          #16bits Index Register X
-    'IY' : '',          #16bits Index Register Y
-    'R'  : '',          #8bits Refresh
-    'I'  : ''           #8bits Interrupciones
-}
-
 
 memory = {'0':'00000000'}
 
@@ -51,11 +58,6 @@ letters = {
     '110' : '(HL)'
 }
 
-instr1 = '01111000'  #Solo para pruebas
-instr2 = '0011100001111000'
-instr3 = '00111'
-
-#Instruccion de transferencia para 1 Byte
 def ld(opA, opB):
     if len(opB) == 3:
         registros[letters[opA]] = registros[letters[opB]]
@@ -84,8 +86,6 @@ def inc(opA):
     #F[6]='0'
     #F[5]='1'
 
-
-    # TODO: Incrementar Funcion
 def dec(opA):
     varDec = registros[opA]
     if len(varDec) == 8:
@@ -108,20 +108,92 @@ def dec(opA):
     #F[6]='0'
     #F[5]='1'
 
-    # TODO: Decrementar Funcion
-
-def rlca():
-    aux = registros[A]
-    corr = aux[1:8] + aux[0]
-    registros[A] = corr
-    #aux[1] = F[7]
-
 def ex(opA, opB):
     aux = registros[opA]
     registros[opA] = registros[opB]
     registros[opB] = aux
     #flags
     update()
+
+def exx():
+    ex('BC', 'BC_p')
+    ex('DE', 'DE_p')
+    ex('HL', 'HL_p')
+
+# Para que la instruccion sea interpretada como
+# una operacion de la ALU, los bits de la instruccion
+# deben estar de la forma [0,0,X,X,X,0,0,1]
+# donde los bits 2, 3 y 4 son la operacion a realizar.
+
+# Los bits 2, 3 y 4 que corresponden al grupo 'y' de la configuracion
+# y son los que se le pasan en el primer parametro.
+
+# Es importante tener en cuenta que esta función
+# es la que hace uso de los Flags, segun la operacion que
+# este realizando.
+
+# Los operandos de la ALU son el registro 'A', que es el Acumulador
+# y el byte que se le pase en el segundo parametro.
+
+#NOTA: Dado que el resultado de la operacion de la ALU se guarda
+#      en el registro 'A' el segundo parametro debe ser de 8 Bits.
+#      En dado caso de que el resultado tenga un bit de mas se guarda en
+#      la bandera Carry.
+
+
+# registros['A'] = operando1
+# arg1 = operador
+# arg2 = operando2
+
+def ALU(arg1, arg2):
+    op1 = registros['A']
+    op2 = arg2
+
+    #Flags
+    # F[0] = S
+    # F[1] = Z
+    # F[3] = H
+    # F[5] = P
+    # F[6] = N
+    # F[7] = C
+
+    if arg1 == '000': #ADD A,
+        aux = int(op1, 2) + int(op2, 2)
+        F[1] = '1' if aux == '00000000' else '0'
+        F[0] = '1' if aux[0] == '1' else '0'
+        F[6] = '0'
+
+        if len(aux) > 8:
+            F[7] = '1'
+            F[5] = '1'
+            registros['A'] = aux[1:8]
+        else:
+            F[7] = '0'
+            F[5] = '0'
+            registros['A'] = aux
+
+    if arg1 == '001': #ADC A,
+        a=0 #solo para dejar compilar
+
+    if arg1 == '010': #SUB
+        a=0 #solo para dejar compilar
+
+    if arg1 == '011': #SBC A,
+        a=0 #solo para dejar compilar
+
+    if arg1 == '100': #AND
+        a=0 #solo para dejar compilar
+
+    if arg1 == '101': #XOR
+        a=0 #solo para dejar compilar
+
+    if arg1 == '011': #OR
+        a=0 #solo para dejar compilar
+
+    if arg1 == '111': #CP
+        a=0 #solo para dejar compilar
+
+
 
 def add(opA, opB):
     varA = registros[opA]
@@ -160,6 +232,12 @@ def add(opA, opB):
         registros[apA] = varA
         #hacer update para apA de 16 bits
 
+def rlca():
+    aux = registros[A]
+    corr = aux[1:8] + aux[0]
+    registros[A] = corr
+    #aux[1] = F[7]
+
 def rrca():
     aux = registros[A]
     corr = aux[7] + aux[0:7]
@@ -173,6 +251,11 @@ def rla():
     F[7] = aux[0]
     registros[A] = corr
 
+def pop(arg):
+    ld(arg, 'SP')
+
+def push(arg):
+    ld('SP', arg)
 #------------------------------------
 #------------------------------------
 def update():
@@ -213,10 +296,17 @@ def execute(instr):
             if q == '0':
                 ld(letters[y], byte2)
             if q == '1':
-                # TODO: ADD este implica manejar los flags, nada grave.
-                a=0 #solo para dejar compilar
+                if p == '00':
+                    add('HL', 'BC')
+                if p == '01':
+                    add('HL', 'DE')
+                if p == '10':
+                    add('HL', 'HL')
+                if p == '11':
+                    add('HL', 'SP')
+
         # Indirect loading
-        if z == '010':
+        if z == '010':Por
             if q == '0':
                 if p == '00':
                     memory['BC'] = registros['A']
@@ -245,18 +335,86 @@ def execute(instr):
 
         # 8-bit INC
         if z == '100':
-            a=0 #solo para dejar compilar
+            inc(y)
         # 8-bit DEC
         if z == '101':
-            a=0 #solo para dejar compilar
+            dec(y)
         # 8-bit load immediate
         if z == '110':
             ld(y, z)
 
         # Assorted operations on accumulator/flags
         if z == '111':
+            if y == '000':
+                rlca()
+            if y == '001':
+                rrca()
+            if y == '010':
+                rla()
+            # TODO: y=3..7
+
+    if x == '01':
+        ld(y,z)
+
+    if x == '10':
+        ALU(y, registros[ letters[z] ])
+
+    if x == '11':
+        if z == '000':
+            ALU(y, registros[ letters[z] ])
+
+        if z == '001':
+            if q == '0':
+                if p == '00':
+                    pop('BC')
+                if p == '01':
+                    pop('DE')
+                if p == '10':
+                    pop('HL')
+                if p == '11':
+                    pop('AF')
+            if q == '1':
+                if p == '00':
+                    a=0 #solo para dejar compilar
+                if p == '01':
+                    exx()
+                if p == '10':
+                    a=0 #solo para dejar compilar
+                if p == '11':
+                    ld('SP', HL)
+
+        if z == '010':
             a=0 #solo para dejar compilar
+
+        if z == '011':
+            if y == '100':
+                ex('DE', 'HL')
+
+        if z == '100':
+            a=0 #solo para dejar compilar
+
+        if z == '101':
+            if q == '0':
+                if p == '00':
+                    push('BC')
+                if p == '01':
+                    push('DE')
+                if p == '10':
+                    push('HL')
+                if p == '11':
+                    push('AF')
+
+        if z == '110':
+            ALU(y, byte2)
+
+        if z == '111':
+            a=0 #solo para dejar compilar
+
     update()
+
+instr1 = '01111000'  #Solo para pruebas
+instr2 = '0011100001111000'
+instr3 = '00111'
 
 execute(instr3)
 print(registros)
@@ -265,6 +423,8 @@ print(registros)
 #El diccionario de funciones va despues de declarar las funciones
 #Ejemplo de un diccionario de funciones
 """
+                # TODO: ADD este implica manejar los flags, nada grave.
+                a=0 #solo para dejar compilar
 
 def suma(a,b):
     return a+b
@@ -300,7 +460,7 @@ dicFunciones = {
     'DJNZ':'DJNZ',
     'EI':'EI',
     'EX':ex(arg1, arg2),
-    'EXX':'EXX',
+    'EXX': exx(),
     'HALT':'HALT',
     'IM':'IM',
     'IN':'IN',
@@ -323,8 +483,8 @@ dicFunciones = {
     'OUT':'OUT',
     'OUTD':'OUTD',
     'OUTI':'OUTI',
-    'POP':'POP',
-    'PUSH':'PUSH',
+    'POP': pop(arg1),
+    'PUSH': push(arg1),
     'RES':'RES',
     'RET':'RET',
     'RETI':'RETI',
