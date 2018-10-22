@@ -53,6 +53,33 @@ def Rell_Zeros(arg):
         aux = '0000000' + arg[2:3]
         return aux
 
+# Pasar de Hexademal a Binario de 8 y 16 8bits
+def hexa_transform(arg):
+    l = len (arg)
+    aux1 = ''
+    aux2 = ''
+    result = ''
+    if l == 5:
+        aux1 = bin(int(arg[1:3], 16))
+        aux2 = bin(int(arg[3:5], 16))
+        result = Rell_Zeros(aux1) + Rell_Zeros(aux2)
+        return result
+    elif l == 3:
+        aux1 = Rell_Zeros(bin(int(arg[1:3], 16)))
+        result = aux1
+        return result
+
+#Toma un decimal y lo convierte en binario de 8 o 16 bits
+def bin_trasnform(arg):
+    aux = bin(arg)
+    if len(aux) > 10:
+        v1 = Rell_Zeros(aux[0:10])
+        v2 = Rell_Zeros(aux[10:len(aux)])
+        result = ''
+        result = v1 + v2
+        return result
+    else:
+        return Rell_Zeros(aux)
 """
 opd1='01111000'
 opd2='0111100011001001'
