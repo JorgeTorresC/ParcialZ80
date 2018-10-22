@@ -21,7 +21,7 @@ from Funcions import *
 
 # (Diccionario instrucciones, diccionario registros, instruccion en Lista)
 def enlazador(dic1, dic2, ins):
-    respuesta = list[]
+    respuesta = list()
     if len(ins) > 0:
         if ins[0] in dic1:
             if len(ins) == 1:
@@ -29,7 +29,7 @@ def enlazador(dic1, dic2, ins):
                 respuesta.append(ins) # Opcode
                 return respuesta
 
-            #Instruccion argumento
+            #Instruccion argumento 2
             elif len(ins) == 2:
                 if ins[1] in dic2:
                     respuesta.append(1) #flag
@@ -226,16 +226,26 @@ def enlazador(dic1, dic2, ins):
                             respuesta.append('El primer valor no se reconoce')
                             #print ('Comando invalido')
                             return respuesta
+                elif ins[1] == '(' or ins[1] == '[':
+                    if ins[3] == ')' or ins[3] == ']':
+                        respuesta.append(1)
+                        respuesta.append(ins[0])
+                        respuesta.append(ins[2])
+                        return respuesta
+                    else:
+                        respuesta.append(0)
+                        respuesta.append("Se espera ')'")
+                        return respuesta
                 else:
                     respuesta.append(0)
                     respuesta.append("Se espera ',' ")
+                    return respuesta
                     #print ('Separador no valido')
             #Fin 4
 
             #Para instruciones de 6
             elif len(ins) == 6:
                 if ins[2] == ',' or ins[4] == ',':
-
                     #Primer caso de 6
                     if ins[1] == '(' or ins[1] == '[':
                         if ins[3] == ')' or ins[3] == ']' :
@@ -569,348 +579,353 @@ def enlazador(dic1, dic2, ins):
                             #print ("Se espera un cierre ")
                             return respuesta
                     #Tercer caso A
-                    elif ins[3] == '+':
-                        if ins[2] in dic2 and ins[4] in dic2: #Si ambos estan en reg
-                            aux1 = dic2[ins[2]]
+                    else:
+                        respuesta.append(0)
+                        respuesta.append('error en los parametrso')
+                elif ins[3] == '+' or ins[3] == '-':
+
+                    if ins[2] in dic2 and ins[4] in dic2: #Si ambos estan en reg
+                        aux1 = dic2[ins[2]]
+                        aux2 = dic2[ins[4]]
+                        res=add_registros(aux1, aux2)
+                        respuesta.append(1) # Flag
+                        respuesta.append(ins[0]) # Opcode
+                        respuesta.append(res) # resultado suma
+                        return respuesta
+                    elif ins[2] not in dic2 and ins[4] in dic2: #Si solo esta el reg 2
+                        if ins[2][0] == '%':#Binario
+                            l = len(ins[2])
+                            aux1 = ins[2][1:l]
                             aux2 = dic2[ins[4]]
                             res=add_registros(aux1, aux2)
                             respuesta.append(1) # Flag
-                            respuesta.append(ins[0]) # Opcode
-                            respuesta.append(res) # resultado suma
+                            respuesta.append(ins[0]) #Opcode
+                            respuesta.append(res) # Binario suma
                             return respuesta
-                        elif ins[2] not in dic2 and ins[4] in dic2: #Si solo esta el reg 2
-                            if ins[2][0] == '%':#Binario
-                                l = len(ins[2])
-                                aux1 = ins[2][1:l]
-                                aux2 = dic2[ins[4]]
-                                res=add_registros(aux1, aux2)
-                                respuesta.append(1) # Flag
-                                respuesta.append(ins[0]) #Opcode
-                                respuesta.append(res) # Binario suma
-                                return respuesta
-                            elif ins[2][0] == '$': #hexadecimal
-                                aux1 = hexa_transform(ins[2])
-                                aux2 = dic2[ins[4]]
-                                res=add_registros(aux1, aux2)
-                                respuesta.append(1) #flag
-                                respuesta.append(ins[0]) #opcode
-                                respuesta.append(res) #binario suma
-                                return respuesta
-                            elif ins[2].isdigit():
-                                aux1 = bin_trasnform(ins[2])
-                                aux2 = dic2[ins[4]]
-                                res=add_registros(aux1, aux2)
-                                respuesta.append(1) # flag
-                                respuesta.append(ins[0]) # opcode
-                                respuesta.append(res) # binario suma
-                                return respuesta
-                            else:
-                                respuesta.append(0) #Flag
-                                respuesta.append('Primer parametro invalido')#Error
-                                #print ('Comando invalido')
-                                return respuesta
-                        elif ins[4] not in dic2 and ins[2] in dic2: #Si solo esta el reg 1
-                            if ins[4][0] == '%': #Binario
-                                aux1 = dic2[ins[2]]
-                                l = len(ins[4])
-                                aux = ins[4][1:l]
+                        elif ins[2][0] == '$': #hexadecimal
+                            aux1 = hexa_transform(ins[2])
+                            aux2 = dic2[ins[4]]
+                            res=add_registros(aux1, aux2)
+                            respuesta.append(1) #flag
+                            respuesta.append(ins[0]) #opcode
+                            respuesta.append(res) #binario suma
+                            return respuesta
+                        elif ins[2].isdigit():
+                            aux1 = bin_trasnform(ins[2])
+                            aux2 = dic2[ins[4]]
+                            res=add_registros(aux1, aux2)
+                            respuesta.append(1) # flag
+                            respuesta.append(ins[0]) # opcode
+                            respuesta.append(res) # binario suma
+                            return respuesta
+                        else:
+                            respuesta.append(0) #Flag
+                            respuesta.append('Primer parametro invalido')#Error
+                            #print ('Comando invalido')
+                            return respuesta
+                    elif ins[4] not in dic2 and ins[2] in dic2: #Si solo esta el reg 1
+                        if ins[4][0] == '%': #Binario
+                            aux1 = dic2[ins[2]]
+                            l = len(ins[4])
+                            aux = ins[4][1:l]
+                            res=add_registros(aux1, aux2)
+                            respuesta.append(1) #Flag
+                            respuesta.append(ins[0]) #Opcode
+                            respuesta.append(res) #Resultado suma
+                            return respuesta
+                        elif ins[4][0] == '$': #hexadecimal
+                            aux1 = dic2[ins[2]]
+                            aux2 = hexa_transform(ins[4])
+                            res=add_registros(aux1, aux2)
+                            respuesta.append(1) # Flag
+                            respuesta.append(ins[0]) # Opcode
+                            respuesta.append(res) #Resultado suma
+                            return respuesta
+                        elif ins[4].isdigit(): #Digito
+                            aux1 = dic2[ins[2]]
+                            aux2 = bin_trasnform(ins[4])
+                            res=add_registros(aux1, aux2)
+                            respuesta.append(1) # Flag
+                            respuesta.append(ins[0]) # Opcode
+                            respuesta.append(res) #Resultado suma
+                            return respuesta
+                        else:
+                            respuesta.append(0) #Flag
+                            respuesta.append('Segundo parametro invalido')#Error
+                            #print ('Comando invalido')
+                            return respuesta
+                    else: #Si ninguno esta en REG
+                        if ins[2][0] == '%':
+                            if ins[4][0] == '%':# Bin - Bin
+                                l1 = len(ins[2])
+                                l2 = len(ins[4])
+                                aux1 = ins[2][1:l1]
+                                aux2 = ins[2][1:l2]
                                 res=add_registros(aux1, aux2)
                                 respuesta.append(1) #Flag
                                 respuesta.append(ins[0]) #Opcode
-                                respuesta.append(res) #Resultado suma
+                                respuesta.append(res) #Binario suma
                                 return respuesta
-                            elif ins[4][0] == '$': #hexadecimal
-                                aux1 = dic2[ins[2]]
+                            elif ins[4][0] == '$':#Bin - Hex
+                                l1 = len(ins[2])
+                                aux1 = ins[2][1:l1]
                                 aux2 = hexa_transform(ins[4])
                                 res=add_registros(aux1, aux2)
-                                respuesta.append(1) # Flag
-                                respuesta.append(ins[0]) # Opcode
-                                respuesta.append(res) #Resultado suma
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
                                 return respuesta
-                            elif ins[4].isdigit(): #Digito
-                                aux1 = dic2[ins[2]]
+                            elif ins[4].isdigit(): #Bin - Digito
+                                aux1 = ins[2][1:l1]
                                 aux2 = bin_trasnform(ins[4])
                                 res=add_registros(aux1, aux2)
-                                respuesta.append(1) # Flag
-                                respuesta.append(ins[0]) # Opcode
-                                respuesta.append(res) #Resultado suma
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
                                 return respuesta
-                            else:
+                            else: #Bin - Desconocido
                                 respuesta.append(0) #Flag
-                                respuesta.append('Segundo parametro invalido')#Error
-                                #print ('Comando invalido')
+                                respuesta.append('El segundo valor no se reconoce') #Error
                                 return respuesta
-                        else: #Si ninguno esta en REG
-                            if ins[2][0] == '%':
-                                if ins[4][0] == '%':# Bin - Bin
-                                    l1 = len(ins[2])
-                                    l2 = len(ins[4])
-                                    aux1 = ins[2][1:l1]
-                                    aux2 = ins[2][1:l2]
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4][0] == '$':#Bin - Hex
-                                    l1 = len(ins[2])
-                                    aux1 = ins[2][1:l1]
-                                    aux2 = hexa_transform(ins[4])
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4].isdigit(): #Bin - Digito
-                                    aux1 = ins[2][1:l1]
-                                    aux2 = bin_trasnform(ins[4])
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                else: #Bin - Desconocido
-                                    respuesta.append(0) #Flag
-                                    respuesta.append('El segundo valor no se reconoce') #Error
-                                    return respuesta
-                            elif ins[2][0] == '$':
-                                if ins[4][0] == '%': #Hex - Bin
-                                    aux1 = hexa_transform(ins[2])
-                                    l2 = len(ins[4])
-                                    aux2 = ins[4][1:l2]
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4][0] == '$':# Hex - Hex
-                                    aux1 = hexa_transform(ins[2])
-                                    aux2 = hexa_transform(ins[4])
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4].isdigit(): #Hex - Digito
-                                    aux1 = hexa_transform(ins[2])
-                                    aux2 = bin_trasnform(ins[4])
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                else: #Hex - Desconocido
-                                    respuesta.append(0) #Flag
-                                    respuesta.append('El segundo valor no se reconoce')
-                                    return respuesta
-                            elif ins[2].isdigit():
-                                if ins[4][0] == '%': #Digito - Bin
-                                    aux1 = bin_trasnform(ins[2])
-                                    l2 = len(ins[4])
-                                    aux2 = ins[4][1:l2]
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4][0] == '$':# Digito - Hex
-                                    aux1 = bin_trasnform(ins[2])
-                                    aux2 = hexa_transform(ins[4])
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4].isdigit(): #Digito - Digito
-                                    aux1 = bin_trasnform(ins[2])
-                                    aux2 = bin_trasnform(ins[4])
-                                    res=add_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario 1
-                                    return respuesta
-                                else: #Hex - Desconocido
-                                    respuesta.append(0) #Flag
-                                    respuesta.append('El segundo valor no se reconoce')
-                                    return respuesta
-                            else:
+                        elif ins[2][0] == '$':
+                            if ins[4][0] == '%': #Hex - Bin
+                                aux1 = hexa_transform(ins[2])
+                                l2 = len(ins[4])
+                                aux2 = ins[4][1:l2]
+                                res=add_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4][0] == '$':# Hex - Hex
+                                aux1 = hexa_transform(ins[2])
+                                aux2 = hexa_transform(ins[4])
+                                res=add_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4].isdigit(): #Hex - Digito
+                                aux1 = hexa_transform(ins[2])
+                                aux2 = bin_trasnform(ins[4])
+                                res=add_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            else: #Hex - Desconocido
                                 respuesta.append(0) #Flag
-                                respuesta.append('El primer valor no se reconoce')
-                                #print ('Comando invalido')
+                                respuesta.append('El segundo valor no se reconoce')
                                 return respuesta
-                    #Tercer caso B
-                    elif  ins[3] == '-':
-                        if ins[2] in dic2 and ins[4] in dic2: #Si ambos estan en reg
-                            aux1 = dic2[ins[2]]
+                        elif ins[2].isdigit():
+                            if ins[4][0] == '%': #Digito - Bin
+                                aux1 = bin_trasnform(ins[2])
+                                l2 = len(ins[4])
+                                aux2 = ins[4][1:l2]
+                                res=add_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4][0] == '$':# Digito - Hex
+                                aux1 = bin_trasnform(ins[2])
+                                aux2 = hexa_transform(ins[4])
+                                res=add_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4].isdigit(): #Digito - Digito
+                                aux1 = bin_trasnform(ins[2])
+                                aux2 = bin_trasnform(ins[4])
+                                res=add_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario 1
+                                return respuesta
+                            else: #Hex - Desconocido
+                                respuesta.append(0) #Flag
+                                respuesta.append('El segundo valor no se reconoce')
+                                return respuesta
+                        else:
+                            respuesta.append(0) #Flag
+                            respuesta.append('El primer valor no se reconoce')
+                            #print ('Comando invalido')
+                            return respuesta
+                        #Tercer caso B
+                elif  ins[3] == '-':
+                    if ins[2] in dic2 and ins[4] in dic2: #Si ambos estan en reg
+                        aux1 = dic2[ins[2]]
+                        aux2 = dic2[ins[4]]
+                        res=res_registros(aux1, aux2)
+                        respuesta.append(1) # Flag
+                        respuesta.append(ins[0]) # Opcode
+                        respuesta.append(res) # resultado suma
+                        return respuesta
+                    elif ins[2] not in dic2 and ins[4] in dic2: #Si solo esta el reg 2
+                        if ins[2][0] == '%':#Binario
+                            l = len(ins[2])
+                            aux1 = ins[2][1:l]
                             aux2 = dic2[ins[4]]
                             res=res_registros(aux1, aux2)
                             respuesta.append(1) # Flag
-                            respuesta.append(ins[0]) # Opcode
-                            respuesta.append(res) # resultado suma
+                            respuesta.append(ins[0]) #Opcode
+                            respuesta.append(res) # Binario suma
                             return respuesta
-                        elif ins[2] not in dic2 and ins[4] in dic2: #Si solo esta el reg 2
-                            if ins[2][0] == '%':#Binario
-                                l = len(ins[2])
-                                aux1 = ins[2][1:l]
-                                aux2 = dic2[ins[4]]
-                                res=res_registros(aux1, aux2)
-                                respuesta.append(1) # Flag
-                                respuesta.append(ins[0]) #Opcode
-                                respuesta.append(res) # Binario suma
-                                return respuesta
-                            elif ins[2][0] == '$': #hexadecimal
-                                aux1 = hexa_transform(ins[2])
-                                aux2 = dic2[ins[4]]
-                                res=res_registros(aux1, aux2)
-                                respuesta.append(1) #flag
-                                respuesta.append(ins[0]) #opcode
-                                respuesta.append(res) #binario suma
-                                return respuesta
-                            elif ins[2].isdigit():
-                                aux1 = bin_trasnform(ins[2])
-                                aux2 = dic2[ins[4]]
-                                res=res_registros(aux1, aux2)
-                                respuesta.append(1) # flag
-                                respuesta.append(ins[0]) # opcode
-                                respuesta.append(res) # binario suma
-                                return respuesta
-                            else:
-                                respuesta.append(0) #Flag
-                                respuesta.append('Primer parametro invalido')#Error
-                                #print ('Comando invalido')
-                                return respuesta
-                        elif ins[4] not in dic2 and ins[2] in dic2: #Si solo esta el reg 1
-                            if ins[4][0] == '%': #Binario
-                                aux1 = dic2[ins[2]]
-                                l = len(ins[4])
-                                aux = ins[4][1:l]
+                        elif ins[2][0] == '$': #hexadecimal
+                            aux1 = hexa_transform(ins[2])
+                            aux2 = dic2[ins[4]]
+                            res=res_registros(aux1, aux2)
+                            respuesta.append(1) #flag
+                            respuesta.append(ins[0]) #opcode
+                            respuesta.append(res) #binario suma
+                            return respuesta
+                        elif ins[2].isdigit():
+                            aux1 = bin_trasnform(ins[2])
+                            aux2 = dic2[ins[4]]
+                            res=res_registros(aux1, aux2)
+                            respuesta.append(1) # flag
+                            respuesta.append(ins[0]) # opcode
+                            respuesta.append(res) # binario suma
+                            return respuesta
+                        else:
+                            respuesta.append(0) #Flag
+                            respuesta.append('Primer parametro invalido')#Error
+                            #print ('Comando invalido')
+                            return respuesta
+                    elif ins[4] not in dic2 and ins[2] in dic2: #Si solo esta el reg 1
+                        if ins[4][0] == '%': #Binario
+                            aux1 = dic2[ins[2]]
+                            l = len(ins[4])
+                            aux = ins[4][1:l]
+                            res=res_registros(aux1, aux2)
+                            respuesta.append(1) #Flag
+                            respuesta.append(ins[0]) #Opcode
+                            respuesta.append(res) #Resultado suma
+                            return respuesta
+                        elif ins[4][0] == '$': #hexadecimal
+                            aux1 = dic2[ins[2]]
+                            aux2 = hexa_transform(ins[4])
+                            res=res_registros(aux1, aux2)
+                            respuesta.append(1) # Flag
+                            respuesta.append(ins[0]) # Opcode
+                            respuesta.append(res) #Resultado suma
+                            return respuesta
+                        elif ins[4].isdigit(): #Digito
+                            aux1 = dic2[ins[2]]
+                            aux2 = bin_trasnform(ins[4])
+                            res=res_registros(aux1, aux2)
+                            respuesta.append(1) # Flag
+                            respuesta.append(ins[0]) # Opcode
+                            respuesta.append(res) #Resultado suma
+                            return respuesta
+                        else:
+                            respuesta.append(0) #Flag
+                            respuesta.append('Segundo parametro invalido')#Error
+                            #print ('Comando invalido')
+                            return respuesta
+                    else: #Si ninguno esta en REG
+                        if ins[2][0] == '%':
+                            if ins[4][0] == '%':# Bin - Bin
+                                l1 = len(ins[2])
+                                l2 = len(ins[4])
+                                aux1 = ins[2][1:l1]
+                                aux2 = ins[2][1:l2]
                                 res=res_registros(aux1, aux2)
                                 respuesta.append(1) #Flag
                                 respuesta.append(ins[0]) #Opcode
-                                respuesta.append(res) #Resultado suma
+                                respuesta.append(res) #Binario suma
                                 return respuesta
-                            elif ins[4][0] == '$': #hexadecimal
-                                aux1 = dic2[ins[2]]
+                            elif ins[4][0] == '$':#Bin - Hex
+                                l1 = len(ins[2])
+                                aux1 = ins[2][1:l1]
                                 aux2 = hexa_transform(ins[4])
                                 res=res_registros(aux1, aux2)
-                                respuesta.append(1) # Flag
-                                respuesta.append(ins[0]) # Opcode
-                                respuesta.append(res) #Resultado suma
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
                                 return respuesta
-                            elif ins[4].isdigit(): #Digito
-                                aux1 = dic2[ins[2]]
+                            elif ins[4].isdigit(): #Bin - Digito
+                                aux1 = ins[2][1:l1]
                                 aux2 = bin_trasnform(ins[4])
                                 res=res_registros(aux1, aux2)
-                                respuesta.append(1) # Flag
-                                respuesta.append(ins[0]) # Opcode
-                                respuesta.append(res) #Resultado suma
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
                                 return respuesta
-                            else:
+                            else: #Bin - Desconocido
                                 respuesta.append(0) #Flag
-                                respuesta.append('Segundo parametro invalido')#Error
-                                #print ('Comando invalido')
+                                respuesta.append('El segundo valor no se reconoce') #Error
                                 return respuesta
-                        else: #Si ninguno esta en REG
-                            if ins[2][0] == '%':
-                                if ins[4][0] == '%':# Bin - Bin
-                                    l1 = len(ins[2])
-                                    l2 = len(ins[4])
-                                    aux1 = ins[2][1:l1]
-                                    aux2 = ins[2][1:l2]
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4][0] == '$':#Bin - Hex
-                                    l1 = len(ins[2])
-                                    aux1 = ins[2][1:l1]
-                                    aux2 = hexa_transform(ins[4])
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4].isdigit(): #Bin - Digito
-                                    aux1 = ins[2][1:l1]
-                                    aux2 = bin_trasnform(ins[4])
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                else: #Bin - Desconocido
-                                    respuesta.append(0) #Flag
-                                    respuesta.append('El segundo valor no se reconoce') #Error
-                                    return respuesta
-                            elif ins[2][0] == '$':
-                                if ins[4][0] == '%': #Hex - Bin
-                                    aux1 = hexa_transform(ins[2])
-                                    l2 = len(ins[4])
-                                    aux2 = ins[4][1:l2]
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4][0] == '$':# Hex - Hex
-                                    aux1 = hexa_transform(ins[2])
-                                    aux2 = hexa_transform(ins[4])
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4].isdigit(): #Hex - Digito
-                                    aux1 = hexa_transform(ins[2])
-                                    aux2 = bin_trasnform(ins[4])
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                else: #Hex - Desconocido
-                                    respuesta.append(0) #Flag
-                                    respuesta.append('El segundo valor no se reconoce')
-                                    return respuesta
-                            elif ins[2].isdigit():
-                                if ins[4][0] == '%': #Digito - Bin
-                                    aux1 = bin_trasnform(ins[2])
-                                    l2 = len(ins[4])
-                                    aux2 = ins[4][1:l2]
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4][0] == '$':# Digito - Hex
-                                    aux1 = bin_trasnform(ins[2])
-                                    aux2 = hexa_transform(ins[4])
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario suma
-                                    return respuesta
-                                elif ins[4].isdigit(): #Digito - Digito
-                                    aux1 = bin_trasnform(ins[2])
-                                    aux2 = bin_trasnform(ins[4])
-                                    res=res_registros(aux1, aux2)
-                                    respuesta.append(1) #Flag
-                                    respuesta.append(ins[0]) #Opcode
-                                    respuesta.append(res) #Binario 1
-                                    return respuesta
-                                else: #Hex - Desconocido
-                                    respuesta.append(0) #Flag
-                                    respuesta.append('El segundo valor no se reconoce')
-                                    return respuesta
-                            else:
+                        elif ins[2][0] == '$':
+                            if ins[4][0] == '%': #Hex - Bin
+                                aux1 = hexa_transform(ins[2])
+                                l2 = len(ins[4])
+                                aux2 = ins[4][1:l2]
+                                res=res_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4][0] == '$':# Hex - Hex
+                                aux1 = hexa_transform(ins[2])
+                                aux2 = hexa_transform(ins[4])
+                                res=res_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4].isdigit(): #Hex - Digito
+                                aux1 = hexa_transform(ins[2])
+                                aux2 = bin_trasnform(ins[4])
+                                res=res_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            else: #Hex - Desconocido
                                 respuesta.append(0) #Flag
-                                respuesta.append('El primer valor no se reconoce')
-                                #print ('Comando invalido')
+                                respuesta.append('El segundo valor no se reconoce')
                                 return respuesta
+                        elif ins[2].isdigit():
+                            if ins[4][0] == '%': #Digito - Bin
+                                aux1 = bin_trasnform(ins[2])
+                                l2 = len(ins[4])
+                                aux2 = ins[4][1:l2]
+                                res=res_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4][0] == '$':# Digito - Hex
+                                aux1 = bin_trasnform(ins[2])
+                                aux2 = hexa_transform(ins[4])
+                                res=res_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario suma
+                                return respuesta
+                            elif ins[4].isdigit(): #Digito - Digito
+                                aux1 = bin_trasnform(ins[2])
+                                aux2 = bin_trasnform(ins[4])
+                                res=res_registros(aux1, aux2)
+                                respuesta.append(1) #Flag
+                                respuesta.append(ins[0]) #Opcode
+                                respuesta.append(res) #Binario 1
+                                return respuesta
+                            else: #Hex - Desconocido
+                                respuesta.append(0) #Flag
+                                respuesta.append('El segundo valor no se reconoce')
+                                return respuesta
+                        else:
+                            respuesta.append(0) #Flag
+                            respuesta.append('El primer valor no se reconoce')
+                            #print ('Comando invalido')
+                            return respuesta
                 else:
                     respuesta.append(0)
                     respuesta.append('Comando invalido')
+                    return respuesta
                     #print ('Comando invalido')
             #Fin Len 6
 
@@ -2079,23 +2094,28 @@ def enlazador(dic1, dic2, ins):
                     else:
                         respuesta.append(0)
                         respuesta.append('Se espera un cierre')
+                        return respuesta
                         #print ('Se espera un cierre ')
                 else:
                     respuesta.append(0)
                     respuesta.append('Comando invalido verifique la instruccion')
                     #print ('Comando invalido verifique la instruccion')
+                    return respuesta
             #Fin len 8
             else:
                 respuesta.append(0)
                 respuesta.append('Verifique la instruccion ')
                 #print ('Verifique la instruccion ')
+                return respuesta
         else:
             respuesta.append(0)
             respuesta.append('Instruccion no valida')
             #print ('Instruccion no valida')
+            return respuesta
     else:
         respuesta.append(0)
         respuesta.append('ingrese un comando')
+        return respuesta
 
 #-----------------------------
 # Ejemplo de base

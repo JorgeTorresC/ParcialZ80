@@ -9,18 +9,18 @@ import sys
 
 #Diccionario de operadores especiales
 dic_operadores = {
-    '(':'token_par_izq',
-    ')':'token_par_der',
-    '[':'token_cor_izq',
-    ']':'token_cor_der',
-    '+':'token_mas',
-    '=':'token_igual',
-    '-':'token_menos',
-    '%':'token_base2',#Binarios 
-    ';':'token_punto_y_coma',
-    ',':'token_coma',
-    "'":'token_apostrofe',
-    '$':'token_pesos'#Hexadecimales
+    '(':'(',
+    ')':')',
+    '[':'[',
+    ']':']',
+    '+':'+',
+    '=':'=',
+    '-':'-',
+    '%':'%',#Binarios
+    ';':';',
+    ',':',',
+    "'":"'",
+    '$':'$'#Hexadecimales
 }
 
 #Diccionario de las palabras reservadas del lenguaje
@@ -144,8 +144,8 @@ def tipo(w):
 #Revisa la lista de posibles tokens
 #mirando el tipo de token que puede llegar a ser el objeto en la lista,
 #Imprime en pantalla el tipo de token que clasifica
-def Lexema( l ):
-    global itx #Instruccion a ejecutar
+def Lexema( l , itx):
+    #global itx #Instruccion a ejecutar
     aux = ''
     answer = ''
     col = 1
@@ -229,11 +229,16 @@ def lector (linea):
     return l
 
 #Main del programa
+
+
 """
-instr = sys.stdin.readlines()
-aux=instr
-l=lector(aux)
-print(len(aux))
-print(l)
-Lexema(l)
+f = sys.stdin.readlines()
+for line in f:
+    itx = list()
+    linea = line
+    l=lector(linea)
+    #print(l)
+    if Lexema(l) == -1:
+        break
+    print(itx, len(itx))
 """

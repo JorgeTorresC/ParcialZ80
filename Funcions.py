@@ -71,7 +71,7 @@ def hexa_transform(arg):
 
 #Toma un decimal y lo convierte en binario de 8 o 16 bits
 def bin_trasnform(arg):
-    aux = bin(arg)
+    aux = bin(int(arg))
     if len(aux) > 10:
         v1 = Rell_Zeros(aux[0:10])
         v2 = Rell_Zeros(aux[10:len(aux)])
@@ -86,7 +86,7 @@ def add_registros(varA, varB):
         aux = int(varA,2) + int(varB,2)
         varA = Rell_Zeros(bin(aux))
         return varA
-    elif len(varA) == 16 len(varB) == 8:
+    elif len(varA) == 16 and len(varB) == 8:
         p1 = varA[0:8]
         P2 = varA[8:16]
         aux1 = int(p2,2) + int(varB,2)
@@ -96,7 +96,7 @@ def add_registros(varA, varB):
         varA = ''
         varA = p1 + p2
         return varA
-    elif len(varA) == 16 len(varB) == 16:
+    elif len(varA) == 16 and len(varB) == 16:
         p1 = varA[0:8]
         P2 = varA[8:16]
         q1 = varB[0:8]
