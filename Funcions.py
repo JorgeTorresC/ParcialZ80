@@ -80,7 +80,58 @@ def bin_trasnform(arg):
         return result
     else:
         return Rell_Zeros(aux)
+
+def add_registros(varA, varB):
+    if len(varA) == 8 and len(varB) == 8:
+        aux = int(varA,2) + int(varB,2)
+        varA = Rell_Zeros(bin(aux))
+        return varA
+    elif len(varA) == 16 len(varB) == 8:
+        p1 = varA[0:8]
+        P2 = varA[8:16]
+        aux1 = int(p2,2) + int(varB,2)
+        p2 = Rell_Zeros(bin(aux1))
+        aux2 = int(p1,2) + int('1',2)
+        p1 = Rell_Zeros(bin(aux2))
+        varA = ''
+        varA = p1 + p2
+        return varA
+    elif len(varA) == 16 len(varB) == 16:
+        p1 = varA[0:8]
+        P2 = varA[8:16]
+        q1 = varB[0:8]
+        q2 = varB[8:16]
+        aux1 = int(p2,2) + int(q2,2)
+        if aux1 > 255:
+            p2 = Rell_Zeros(bin(aux1))
+            aux2 = int(p1,2) + int('1',2)
+            aux2 = aux2 + int(q1,2)
+            p1 = Rell_Zeros(bin(aux2))
+        else:
+            p2 = Rell_Zeros(bin(aux1))
+            aux2 = aux2 + int(q1,2)
+            p1 = Rell_Zeros(bin(aux2))
+        varA = ''
+        varA = p1 + p2
+        return varA
+
+def res_registros(var1, var2):
+    aux = hex(int(varA,2) - int(varB,2))
+    #aux2 = hexa_transform(aux[2:len(aux)])
+    l=len(aux)
+    if l == 3 or l == 4:
+        aux2 = hexa_transform(aux[2:l])
+        return Rell_Zeros(aux2)
+    elif l == 5 or l == 6:
+        p1 = Rell_Zeros(hexa_transform(aux[2:4]))
+        p2 = Rell_Zeros(hexa_transform(aux[4:l]))
+        return p1 + p2
+
 """
+
+aux = int(A,2) - int(arg,2)
+A = Rell_Zeros(bin(aux))
+
 opd1='01111000'
 opd2='0111100011001001'
 opd3='011110001100100100000000'
