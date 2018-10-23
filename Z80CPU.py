@@ -67,6 +67,8 @@ letters = {
     '110' : '(HL)'
 }
 
+printlist=list()
+
 def input(register, port):
     registros[register] = memory[port]
 
@@ -523,6 +525,7 @@ print( 'Carry:', F[7])
 #
 
 def operar(argins, ope1, ope2):
+    global printlist
     if argins == 'ADD':
         add(ope1)
     elif argins == 'INPUT':
@@ -557,9 +560,20 @@ def operar(argins, ope1, ope2):
     elif argins == 'OUTPUT':
         output(ope1, ope2)
     else:
-        print ('funcion no reconocida')
+        printlist=[]
+        printlist.append(0)
+        printlist.append('funcion no reconocida')
 
 
+def show_z80():
+    if len(printlist)>0 and printlist[0]==0:
+        return printlist
+    else:
+        printlist.append(1)
+        printlist.append(registros['A'])
+        printlist.append(registros['B'])
+        printlist.append(F)
+        return printlist
 
 dicFunciones = {
      'ADC':'ADC',

@@ -10,6 +10,7 @@ from tkinter import *
 from tkinter import ttk
 import getpass
 from main import start_ins
+from Z80CPU import show_z80
 
 instruccion = ''
 
@@ -43,6 +44,14 @@ class Aplicacion():
         bg = 'grey').place(x = 18, y = 50)
         #print(type(instruccion))
         aux=start_ins(instruccion)
+#
+        lprint=show_z80()
+        if len(lprint)==2:
+            l1 = Label(text = str(lprint[1])).place(x = 18, y = 70)
+        else:
+            l1 = Label(text = str(lprint[1])).place(x = 18, y = 90)
+            l2 = Label(text = str(lprint[2])).place(x = 18, y = 110)
+            l3 = Label(text = str(lprint[3])).place(x = 18, y = 130)
 
 #Main_temp
 def main():
