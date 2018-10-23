@@ -29,7 +29,12 @@ def take_opcode(instr):
 
 def Rell_Zeros(arg):
     aux = ''
-    if len(arg)==10:
+    # print arg
+    if arg[0] == '-':
+        return '1'+ arg[3:]
+    elif len(arg) == 11:
+        return arg[2:]
+    elif len(arg)==10:
         return arg[2:10]
     elif len(arg)==9:
         aux = '0' + arg[2:9]
@@ -72,6 +77,7 @@ def hexa_transform(arg):
 #Toma un decimal y lo convierte en binario de 8 o 16 bits
 def bin_trasnform(arg):
     aux = bin(int(arg))
+    print aux
     if len(aux) > 10:
         v1 = Rell_Zeros(aux[0:10])
         v2 = Rell_Zeros(aux[10:len(aux)])

@@ -48,8 +48,11 @@ registros = {
 # F[5] =    P/V  = Parity/oVerflow (PO, PE)
 # F[6] =    N    = additioN
 # F[7] =    C    = Carry flag (C, NC)
-F = '00000000'
-F_p = '00000000'  #8bits
+# F = '00000000'
+# F_p = '00000000'  #8bits
+
+F = ['0','0','0','0','0','0','0','0']
+F_p = ['0','0','0','0','0','0','0','0']
 
 memory = {'0':'00000000'}
 
@@ -64,11 +67,28 @@ letters = {
     '110' : '(HL)'
 }
 
+def input(register, port):
+    registros[register] = memory[port]
+
+def output(port, register):
+    memory[port] = registros[register]
+
+def cpl():
+    a = registros['A']
+    aux = ''
+    for c in a:
+        if c == '1':
+            aux += '0'
+        elif c == '0':
+            aux += '1'
+    registros['A'] = aux
+
 def ld(opA, opB):
-    if len(opB) == 3:
-        registros[letters[opA]] = registros[letters[opB]]
-    elif len(opB) == 8 or len(opB) == 16:
-        registros[opA] = opB
+    registros[opA] = registros[opB]
+    # if len(opB) == 3:
+    #     registros[letters[opA]] = registros[letters[opB]]
+    # elif len(opB) == 8 or len(opB) == 16:
+    #     registros[opA] = opB
 
 def inc(opA):
     varInc = registros[opA]
@@ -161,7 +181,7 @@ def ALU(arg1, arg2):
     op2 = arg2
 
     #Suma Binaria
-    if arg1 == '000':  #ADD A,
+    if arg1 == '000':  #ADD A, o #ADD HL,
         aux = int(op1, 2) + int(op2, 2)
     elif arg1 == '001': #ADC A,
         aux = int(op1, 2) + int(op2, 2) + F[7]
@@ -171,17 +191,28 @@ def ALU(arg1, arg2):
     elif arg1 == '011': #SBC A,
         aux = int(op1, 2) - int(op2, 2) - F[7]
         F[6] = '1'
-    #Overflow para 8 Bits
-    if len(aux) > 8:
-        F[5] = '1'
-        F[7] = '1'
-        registros['A'] = aux[1:8]
-    else:
+
+    # print aux, 'o'
+    # print bin_trasnform(aux)
+    aux = Rell_Zeros(bin(aux))
+    # print aux
+
+    if len(aux) == 8:
         F[5] = '0'
         F[7] = '0'
         registros['A'] = aux
-
-    # TODO: Suma para 16 bits
+    elif len(aux) > 8 and len(aux) < 16:
+        F[5] = '1'
+        F[7] = '1'
+        registros['A'] = aux[1:]
+    elif len(aux) == 16:
+        F[5] = '0'
+        F[7] = '0'
+        registros['HL'] = aux
+    elif len(aux) > 16:
+        F[5] = '1'
+        F[7] = '1'
+        registros['HL'] = aux[8:]
 
     #Operaciones Lógicas
     if arg1 == '100': #AND
@@ -242,7 +273,12 @@ def ALU(arg1, arg2):
 
 
 def add(arg1):
-    ALU('000', arg1)
+    value = registros[arg1]
+    ALU('000', value)
+
+def sub(arg1):
+    value = registros[arg1]
+    ALU('010', value)
 
 def rlca():
     aux = registros[A]
@@ -429,94 +465,142 @@ def execute(instr):
 instr1 = '01111000'  #Solo para pruebas
 instr2 = '0011100001111000'
 instr3 = '00111'
+# execute(instr3)
 
-execute(instr3)
-print(registros)
+def print_registers():
+    for registro in registros:
+        print registro, ':', registros[registro]
+    print F
 
+def print_memory():
+    print 'Memoria: '
+    for port in memory:
+        print port, ':', memory[port]
+# Ejercicios
+# 1. Cargue el numero F2H y 68H en los registros B y C respectivamente
+print 'Ejercicio 1:'
+memory['0000000000000000'] = '11110010'
+memory['0000000000000001'] = '01101000'
+input('B', '0000000000000000')
+input('C', '0000000000000001')
+print_registers()
 
-#El diccionario de funciones va despues de declarar las funciones
-#Ejemplo de un diccionario de funciones
-"""
-def suma(a,b):
-    return a+b
-def resta(arg):
-    return arg-1
+# 2. Almacene A2H en la locacion de memoria 2065H
+print '\n Ejercicio 2:'
+port1 = bin_trasnform('2065') # TODO: Pulir
+memory[port1] = '10100010'
 
-var1=int(input('ingrese un numero'))
-var2=3
-arg=6
-dic={'1':suma(var1,var2),'2':resta(arg)}
-print('diccionario de funciones', dic['1'])
+# 3. Reste el 68H de F2H
+print '\n Ejercicio 3:'
+ld('A', 'C')
+sub('B')
+print_registers()
 
-"""
-#variables para pasar a las funciones
-arg1,arg2 = '',''
+# 4. Complemente a 1's el resultado
+print '\n Ejercicio 4:'
+cpl()
+print_registers()
 
-dicFunciones = {
-    'ADC':'ADC',
-    'ADD':add(arg1),
-    'AND':'AND',
-    'BIT':'BIT',
-    'CALL':'CALL',
-    'CCF':'CCF',
-    'CP':'CP',
-    'CPD':'CPD',
-    'CPDR':'CDPR',
-    'CPI':'CPI',
-    'CPIR':'CIR',
-    'CPL':'CPL',
-    'DAA':'DAA',
-    'DEC':dec(arg1),
-    'DI':'DI',
-    'DJNZ':'DJNZ',
-    'EI':'EI',
-    'EX':ex(arg1, arg2),
-    'EXX': exx(),
-    'HALT':'HALT',
-    'IM':'IM',
-    'IN':'IN',
-    'INC':inc(arg1),
-    'IND':'IND',
-    'INDR':'INDR',
-    'INI':'INI',
-    'INIR':'INIR',
-    'JP':'JP',
-    'JR':'JR',
-    'LD':ld(arg1, arg2),
-    'LDD':'LDD',
-    'LDDR':'LDDR',
-    'LDI':'LDI',
-    'LDIR':'LDIR',
-    'NEG':'NEG',
-    'NOP':'NOP',
-    'OR':'OR',
-    'OTDR':'OTDR',
-    'OUT':'OUT',
-    'OUTD':'OUTD',
-    'OUTI':'OUTI',
-    'POP': pop(arg1),
-    'PUSH': push(arg1),
-    'RES':'RES',
-    'RET':'RET',
-    'RETI':'RETI',
-    'RETN':'RETN',
-    'RL':'RL',
-    'RLA':rla(),
-    'RLC':'RLC',
-    'RLCA':rlca(),
-    'RLD':'RLD',
-    'RR':'RR',
-    'RRA':'RRA',
-    'RRC':'RRC',
-    'RRCA':rrca(),
-    'RRD':'RRD',
-    'RST':'RST',
-    'SBC':'SBC',
-    'SCF':'SCF',
-    'SET':'SET',
-    'SLA':'SLA',
-    'SRA':'SRA',
-    'SLR':'SLR',
-    'SUB':'SUB',
-    'XOR':'XOR'
-}
+#5. Sume A2H desde la memoria
+print '\n Ejercicio 5:'
+input('D', port1)
+add('D')
+print_registers()
+
+#6. Almacene la respuesta final en la locacion de memoria 2066
+port2 = bin_trasnform('2066')
+memory[port2] = registros['A']
+print_memory()
+
+#7. Determine el estado del signo(S), cero(Z) y el carry(C)
+print 'Signo: ', F[0]
+print 'Cero: ', F[1]
+print 'Carry:', F[7]
+
+#
+# #El diccionario de funciones va despues de declarar las funciones
+# #Ejemplo de un diccionario de funciones
+# """
+# def suma(a,b):
+#     return a+b
+# def resta(arg):
+#     return arg-1
+#
+# var1=int(input('ingrese un numero'))
+# var2=3
+# arg=6
+# dic={'1':suma(var1,var2),'2':resta(arg)}
+# print('diccionario de funciones', dic['1'])
+#
+# """
+# #variables para pasar a las funciones
+# arg1,arg2 = '00000000','00000000'
+#
+# dicFunciones = {
+#     'ADC':'ADC',
+#     'ADD':add(arg1),
+#     'AND':'AND',
+#     'BIT':'BIT',
+#     'CALL':'CALL',
+#     'CCF':'CCF',
+#     'CP':'CP',
+#     'CPD':'CPD',
+#     'CPDR':'CDPR',
+#     'CPI':'CPI',
+#     'CPIR':'CIR',
+#     'CPL':'CPL',
+#     'DAA':'DAA',
+#     'DEC':dec(arg1),
+#     'DI':'DI',
+#     'DJNZ':'DJNZ',
+#     'EI':'EI',
+#     'EX':ex(arg1, arg2),
+#     'EXX': exx(),
+#     'HALT':'HALT',
+#     'IM':'IM',
+#     'IN':'IN',
+#     'INC':inc(arg1),
+#     'IND':'IND',
+#     'INDR':'INDR',
+#     'INI':'INI',
+#     'INIR':'INIR',
+#     'JP':'JP',
+#     'JR':'JR',
+#     'LD':ld(arg1, arg2),
+#     'LDD':'LDD',
+#     'LDDR':'LDDR',
+#     'LDI':'LDI',
+#     'LDIR':'LDIR',
+#     'NEG':'NEG',
+#     'NOP':'NOP',
+#     'OR':'OR',
+#     'OTDR':'OTDR',
+#     'OUT':'OUT',
+#     'OUTD':'OUTD',
+#     'OUTI':'OUTI',
+#     'POP': pop(arg1),
+#     'PUSH': push(arg1),
+#     'RES':'RES',
+#     'RET':'RET',
+#     'RETI':'RETI',
+#     'RETN':'RETN',
+#     'RL':'RL',
+#     'RLA':rla(),
+#     'RLC':'RLC',
+#     'RLCA':rlca(),
+#     'RLD':'RLD',
+#     'RR':'RR',
+#     'RRA':'RRA',
+#     'RRC':'RRC',
+#     'RRCA':rrca(),
+#     'RRD':'RRD',
+#     'RST':'RST',
+#     'SBC':'SBC',
+#     'SCF':'SCF',
+#     'SET':'SET',
+#     'SLA':'SLA',
+#     'SRA':'SRA',
+#     'SLR':'SLR',
+#     'SUB':'SUB',
+#     'XOR':'XOR'
+# }
