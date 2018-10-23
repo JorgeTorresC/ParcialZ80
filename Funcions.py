@@ -77,7 +77,7 @@ def hexa_transform(arg):
 #Toma un decimal y lo convierte en binario de 8 o 16 bits
 def bin_trasnform(arg):
     aux = bin(int(arg))
-    print aux
+    #print aux
     if len(aux) > 10:
         v1 = Rell_Zeros(aux[0:10])
         v2 = Rell_Zeros(aux[10:len(aux)])
@@ -132,18 +132,3 @@ def res_registros(var1, var2):
         p1 = Rell_Zeros(hexa_transform(aux[2:4]))
         p2 = Rell_Zeros(hexa_transform(aux[4:l]))
         return p1 + p2
-
-"""
-
-aux = int(A,2) - int(arg,2)
-A = Rell_Zeros(bin(aux))
-
-opd1='01111000'
-opd2='0111100011001001'
-opd3='011110001100100100000000'
-opd4='01111000110010010000000000000000'
-take_opcode(opd1)
-take_opcode(opd2)
-take_opcode(opd3)
-take_opcode(opd4)
-"""

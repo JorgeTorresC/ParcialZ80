@@ -9,6 +9,7 @@
 from tkinter import *
 from tkinter import ttk
 import getpass
+from main import start_ins
 
 instruccion = ''
 
@@ -41,6 +42,7 @@ class Aplicacion():
         lbl = Label(text = 'Comando: ' + instruccion,
         bg = 'grey').place(x = 18, y = 50)
         #print(type(instruccion))
+        aux=start_ins(instruccion)
 
 #Main_temp
 def main():

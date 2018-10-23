@@ -469,16 +469,16 @@ instr3 = '00111'
 
 def print_registers():
     for registro in registros:
-        print registro, ':', registros[registro]
-    print F
+        print(registro, ':', registros[registro])
+    print(F)
 
 def print_memory():
-    print 'Memoria: '
+    print( 'Memoria: ')
     for port in memory:
-        print port, ':', memory[port]
+        print( port, ':', memory[port])
 # Ejercicios
 # 1. Cargue el numero F2H y 68H en los registros B y C respectivamente
-print 'Ejercicio 1:'
+print('Ejercicio 1:')
 memory['0000000000000000'] = '11110010'
 memory['0000000000000001'] = '01101000'
 input('B', '0000000000000000')
@@ -486,23 +486,23 @@ input('C', '0000000000000001')
 print_registers()
 
 # 2. Almacene A2H en la locacion de memoria 2065H
-print '\n Ejercicio 2:'
+print( '\n Ejercicio 2:')
 port1 = bin_trasnform('2065') # TODO: Pulir
 memory[port1] = '10100010'
 
 # 3. Reste el 68H de F2H
-print '\n Ejercicio 3:'
+print( '\n Ejercicio 3:')
 ld('A', 'C')
 sub('B')
 print_registers()
 
 # 4. Complemente a 1's el resultado
-print '\n Ejercicio 4:'
+print( '\n Ejercicio 4:')
 cpl()
 print_registers()
 
 #5. Sume A2H desde la memoria
-print '\n Ejercicio 5:'
+print( '\n Ejercicio 5:')
 input('D', port1)
 add('D')
 print_registers()
@@ -513,94 +513,119 @@ memory[port2] = registros['A']
 print_memory()
 
 #7. Determine el estado del signo(S), cero(Z) y el carry(C)
-print 'Signo: ', F[0]
-print 'Cero: ', F[1]
-print 'Carry:', F[7]
+print( 'Signo: ', F[0])
+print( 'Cero: ', F[1])
+print( 'Carry:', F[7])
 
 #
-# #El diccionario de funciones va despues de declarar las funciones
-# #Ejemplo de un diccionario de funciones
-# """
-# def suma(a,b):
-#     return a+b
-# def resta(arg):
-#     return arg-1
+
+#arg1,arg2 = 'A','B'
 #
-# var1=int(input('ingrese un numero'))
-# var2=3
-# arg=6
-# dic={'1':suma(var1,var2),'2':resta(arg)}
-# print('diccionario de funciones', dic['1'])
-#
-# """
-# #variables para pasar a las funciones
-# arg1,arg2 = '00000000','00000000'
-#
-# dicFunciones = {
-#     'ADC':'ADC',
-#     'ADD':add(arg1),
-#     'AND':'AND',
-#     'BIT':'BIT',
-#     'CALL':'CALL',
-#     'CCF':'CCF',
-#     'CP':'CP',
-#     'CPD':'CPD',
-#     'CPDR':'CDPR',
-#     'CPI':'CPI',
-#     'CPIR':'CIR',
-#     'CPL':'CPL',
-#     'DAA':'DAA',
-#     'DEC':dec(arg1),
-#     'DI':'DI',
-#     'DJNZ':'DJNZ',
-#     'EI':'EI',
-#     'EX':ex(arg1, arg2),
-#     'EXX': exx(),
-#     'HALT':'HALT',
-#     'IM':'IM',
-#     'IN':'IN',
-#     'INC':inc(arg1),
-#     'IND':'IND',
-#     'INDR':'INDR',
-#     'INI':'INI',
-#     'INIR':'INIR',
-#     'JP':'JP',
-#     'JR':'JR',
-#     'LD':ld(arg1, arg2),
-#     'LDD':'LDD',
-#     'LDDR':'LDDR',
-#     'LDI':'LDI',
-#     'LDIR':'LDIR',
-#     'NEG':'NEG',
-#     'NOP':'NOP',
-#     'OR':'OR',
-#     'OTDR':'OTDR',
-#     'OUT':'OUT',
-#     'OUTD':'OUTD',
-#     'OUTI':'OUTI',
-#     'POP': pop(arg1),
-#     'PUSH': push(arg1),
-#     'RES':'RES',
-#     'RET':'RET',
-#     'RETI':'RETI',
-#     'RETN':'RETN',
-#     'RL':'RL',
-#     'RLA':rla(),
-#     'RLC':'RLC',
-#     'RLCA':rlca(),
-#     'RLD':'RLD',
-#     'RR':'RR',
-#     'RRA':'RRA',
-#     'RRC':'RRC',
-#     'RRCA':rrca(),
-#     'RRD':'RRD',
-#     'RST':'RST',
-#     'SBC':'SBC',
-#     'SCF':'SCF',
-#     'SET':'SET',
-#     'SLA':'SLA',
-#     'SRA':'SRA',
-#     'SLR':'SLR',
-#     'SUB':'SUB',
-#     'XOR':'XOR'
-# }
+
+def operar(argins, ope1, ope2):
+    if argins == 'ADD':
+        add(ope1)
+    elif argins == 'INPUT':
+        if len(ope2) == 8:
+            input(ope1, ope2)
+        else:
+            input(ope1, memory[ope2])
+    elif argins == 'CPL':
+        cpl()
+    elif argins == 'SUB':
+        sub(ope1)
+    elif argins == 'LD':
+        ld(ope1, ope2)
+    elif argins == 'PUSH':
+        push(ope1)
+    elif argins == 'EX':
+        ex(ope1, ope2)
+    elif argins == 'EXX':
+        exx()
+    elif argins == 'POP':
+        pop(ope1)
+    elif argins == 'RLA':
+        rla()
+    elif argins == 'RLCA':
+        rlca()
+    elif argins == 'RRCA':
+        rrca()
+    elif argins == 'DEC':
+        dec(ope1)
+    elif argins == 'INC':
+        inc(ope1)
+    elif argins == 'OUTPUT':
+        output(ope1, ope2)
+    else:
+        print ('funcion no reconocida')
+
+
+
+dicFunciones = {
+     'ADC':'ADC',
+     'ADD':'add',
+     'AND':'AND',
+     'BIT':'BIT',
+     'CALL':'CALL',
+     'CCF':'CCF',
+     'CP':'CP',
+     'CPD':'CPD',
+     'CPDR':'CDPR',
+     'CPI':'CPI',
+     'CPIR':'CIR',
+     'CPL':'CPL',
+     'DAA':'DAA',
+     'DEC':'dec',
+     'DI':'DI',
+     'DJNZ':'DJNZ',
+     'EI':'EI',
+     'EX':'ex',
+     'EXX': 'exx',
+     'HALT':'HALT',
+     'IM':'IM',
+     'IN':'IN',
+     'INC':'inc',
+     'IND':'IND',
+     'INDR':'INDR',
+     'INI':'INI',
+     'INIR':'INIR',
+     'JP':'JP',
+     'JR':'JR',
+     'LD':'ld',
+     'LDD':'LDD',
+     'LDDR':'LDDR',
+     'LDI':'LDI',
+     'LDIR':'LDIR',
+     'NEG':'NEG',
+     'NOP':'NOP',
+     'OR':'OR',
+     'OTDR':'OTDR',
+     'OUT':'OUT',
+     'OUTD':'OUTD',
+     'OUTI':'OUTI',
+     'POP': 'pop',
+     'PUSH': 'push',
+     'RES':'RES',
+     'RET':'RET',
+     'RETI':'RETI',
+     'RETN':'RETN',
+     'RL':'RL',
+     'RLA':'rla',
+     'RLC':'RLC',
+     'RLCA':'rlca',
+     'RLD':'RLD',
+     'RR':'RR',
+     'RRA':'RRA',
+     'RRC':'RRC',
+     'RRCA':'rrca',
+     'RRD':'RRD',
+     'RST':'RST',
+     'SBC':'SBC',
+     'SCF':'SCF',
+     'SET':'SET',
+     'SLA':'SLA',
+     'SRA':'SRA',
+     'SLR':'SLR',
+     'SUB':'SUB',
+     'XOR':'XOR'
+}
