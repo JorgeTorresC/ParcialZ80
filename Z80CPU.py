@@ -5,7 +5,7 @@
 # Jorge Ivan Torres
 # Daniel Caita
 # *************************
-add
+
 from Funcions import *
 
 registros = {
@@ -42,6 +42,12 @@ registros = {
 }
 
 #Banderas <|S|Z|-|H|-|P|N|C|>
+# F[0] =    S    = Sign (P, M)
+# F[1] =    Z    = Zero (Z, NZ)
+# F[3] =    H    = Half carry
+# F[5] =    P/V  = Parity/oVerflow (PO, PE)
+# F[6] =    N    = additioN
+# F[7] =    C    = Carry flag (C, NC)
 F = '00000000'
 F_p = '00000000'  #8bits
 
@@ -107,8 +113,10 @@ def dec(opA):
         registros[apA] = varDec
     #F[6]='0'
     #F[5]='1'
+    # TODO: Cuadrar los flags
 
 def ex(opA, opB):
+    # TODO: Corregir
     aux = registros[opA]
     registros[opA] = registros[opB]
     registros[opB] = aux
@@ -146,53 +154,89 @@ def exx():
 # arg2 = operando2
 
 def ALU(arg1, arg2):
+    global F
     op1 = registros['A']
     op2 = arg2
 
-    #Flags
-    # F[0] = S
-    # F[1] = Z
-    # F[3] = H
-    # F[5] = P
-    # F[6] = N
-    # F[7] = C
-
-    if arg1 == '000': #ADD A,
+    #Suma Binaria
+    if arg1 == '000':  #ADD A,
         aux = int(op1, 2) + int(op2, 2)
-        F[1] = '1' if aux == '00000000' else '0'
-        F[0] = '1' if aux[0] == '1' else '0'
-        F[6] = '0'
+    elif arg1 == '001': #ADC A,
+        aux = int(op1, 2) + int(op2, 2) + F[7]
+    elif arg1 == '010': #SUB A,
+        aux = int(op1, 2) - int(op2, 2)
+        F[6] = '1'
+    elif arg1 == '011': #SBC A,
+        aux = int(op1, 2) - int(op2, 2) - F[7]
+        F[6] = '1'
+    #Overflow para 8 Bits
+    if len(aux) > 8:
+        F[5] = '1'
+        F[7] = '1'
+        registros['A'] = aux[1:8]
+    else:
+        F[5] = '0'
+        F[7] = '0'
+        registros['A'] = aux
 
-        if len(aux) > 8:
-            F[7] = '1'
-            F[5] = '1'
-            registros['A'] = aux[1:8]
-        else:
-            F[7] = '0'
-            F[5] = '0'
-            registros['A'] = aux
+    # TODO: Suma para 16 bits
 
-    if arg1 == '001': #ADC A,
-        a=0 #solo para dejar compilar
-
-    if arg1 == '010': #SUB
-        a=0 #solo para dejar compilar
-
-    if arg1 == '011': #SBC A,
-        a=0 #solo para dejar compilar
-
+    #Operaciones Lógicas
     if arg1 == '100': #AND
-        a=0 #solo para dejar compilar
+        aux = ''
+        for i in range(op1):
+            if op1[i] == '1' and op2[i+8] == '1':
+                aux += '1'
+            else:
+                aux += '0'
+        registros['A'] = aux
+        F[3] = '1'
+        F[5] = '0' if aux[-1] == '1' else '1'
+        F[6] = '0'
+        F[7] = '0'
 
     if arg1 == '101': #XOR
-        a=0 #solo para dejar compilar
+        aux = ''
+        for i in range(len(op1)):
+            if op1[i] == '1' and op2[i] == '0':
+                aux += '1'
+            elif op1[i] == '0' and op2[i] == '1':
+                aux += '1'
+            else:
+                aux += '0'
+        registros['A'] = aux
+        F[3] = '0'
+        F[7] = '0'
+        F[5] = '0' if aux[-1] == '1' else '1'
+        F[6] = '0'
 
     if arg1 == '011': #OR
-        a=0 #solo para dejar compilar
+        aux = ''
+        for i in range(len(op1)):
+            if op1[i] == '1' or op2[i] == '1':
+                aux += '1'
+            else:
+                aux += '0'
+        registros['A'] = aux
+        F[3] = '0'
+        F[5] = '0' if aux[-1] == '1' else '1'
+        F[6] = '0'
+        F[7] = '0'
 
     if arg1 == '111': #CP
-        a=0 #solo para dejar compilar
+        aux = int(op1, 2) - int(op2, 2)
+        #Overflow para 8 Bits
+        if len(aux) > 8:
+            F[5] = '1'
+            F[7] = '1'
+            registros['A'] = aux[1:8]
+        else:
+            F[5] = '0'
+            F[7] = '0'
+            registros['A'] = aux
 
+    F[0] = '1' if aux[0] == '1' else '0'
+    F[1] = '1' if '1' not in aux else '0'
 
 
 def add(opA, opB):
@@ -361,7 +405,8 @@ def execute(instr):
 
     if x == '11':
         if z == '000':
-            ALU(y, registros[ letters[z] ])
+            a=0 #solo para dejar compilar
+            # ALU(y, registros[ letters[z] ])
 
         if z == '001':
             if q == '0':
@@ -387,7 +432,7 @@ def execute(instr):
             a=0 #solo para dejar compilar
 
         if z == '011':
-            if y == '100':
+            if y == '101':
                 ex('DE', 'HL')
 
         if z == '100':
@@ -423,9 +468,6 @@ print(registros)
 #El diccionario de funciones va despues de declarar las funciones
 #Ejemplo de un diccionario de funciones
 """
-                # TODO: ADD este implica manejar los flags, nada grave.
-                a=0 #solo para dejar compilar
-
 def suma(a,b):
     return a+b
 def resta(arg):
