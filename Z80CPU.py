@@ -10,35 +10,35 @@ from Funcions import *
 
 registros = {
     #Registros de Proposito General
-    'A'    : '' ,         #8bits -> Acumulador
-    'B'    : '',          #8bits
-    'C'    : '',          #8bits
-    'D'    : '',          #8bits
-    'E'    : '',          #8bits
-    'H'    : '',          #8bits
-    'L'    : '',          #8bits
-    'BC'   : '',          #16bits
-    'DE'   : '',          #16bits
-    'HL'   : '',          #16bits
-    'AF'   : '',          #16bits
-    'A_p'  : '',          #8bits
-    'B_p'  : '',          #8bits
-    'C_p'  : '',          #8bits
-    'D_p'  : '',          #8bits
-    'E_p'  : '',          #8bits
-    'H_p'  : '',          #8bits
-    'L_p'  : '',          #8bits
-    'BC_p' : '',          #16bits
-    'DE_p' : '',          #16bits
-    'HL_p' : '',          #16bits
-    'AF_p' : '',          #16bits
+    'A'    : '00000000' ,         #8bits -> Acumulador
+    'B'    : '00000000',          #8bits
+    'C'    : '00000000',          #8bits
+    'D'    : '00000000',          #8bits
+    'E'    : '00000000',          #8bits
+    'H'    : '00000000',          #8bits
+    'L'    : '00000000',          #8bits
+    'BC'   : '00000000',          #16bits
+    'DE'   : '00000000',          #16bits
+    'HL'   : '00000000',          #16bits
+    'AF'   : '00000000',          #16bits
+    'A_p'  : '00000000',          #8bits
+    'B_p'  : '00000000',          #8bits
+    'C_p'  : '00000000',          #8bits
+    'D_p'  : '00000000',          #8bits
+    'E_p'  : '00000000',          #8bits
+    'H_p'  : '00000000',          #8bits
+    'L_p'  : '00000000',          #8bits
+    'BC_p' : '0000000000000000',  #16bits
+    'DE_p' : '0000000000000000',  #16bits
+    'HL_p' : '0000000000000000',  #16bits
+    'AF_p' : '0000000000000000',  #16bits
     #Registros de Proposito Especial
-    'PC'   : '',          #16bits Program counter
-    'SP'   : '',          #16bits Stack Pounter
-    'IX'   : '',          #16bits Index Register X
-    'IY'   : '',          #16bits Index Register Y
-    'R'    : '',          #8bits Refresh
-    'I'    : ''           #8bits Interrupciones
+    'PC'   : '0000000000000000',  #16bits Program counter
+    'SP'   : '0000000000000000',  #16bits Stack Pounter
+    'IX'   : '0000000000000000',  #16bits Index Register X
+    'IY'   : '0000000000000000',  #16bits Index Register Y
+    'R'    : '00000000',          #8bits Refresh
+    'I'    : '00000000'           #8bits Interrupciones
 }
 
 #Banderas <|S|Z|-|H|-|P|N|C|>
@@ -86,7 +86,10 @@ def cpl():
     registros['A'] = aux
 
 def ld(opA, opB):
-    registros[opA] = registros[opB]
+    if opB in registros :
+        registros[opA] = registros[opB]
+    else :
+        registros[opA] = opB
     # if len(opB) == 3:
     #     registros[letters[opA]] = registros[letters[opB]]
     # elif len(opB) == 8 or len(opB) == 16:
@@ -478,6 +481,8 @@ def print_memory():
     print( 'Memoria: ')
     for port in memory:
         print( port, ':', memory[port])
+
+"""
 # Ejercicios
 # 1. Cargue el numero F2H y 68H en los registros B y C respectivamente
 print('Ejercicio 1:')
@@ -519,10 +524,8 @@ print( 'Signo: ', F[0])
 print( 'Cero: ', F[1])
 print( 'Carry:', F[7])
 
-#
+"""
 
-#arg1,arg2 = 'A','B'
-#
 
 def operar(argins, ope1, ope2):
     global printlist
@@ -538,7 +541,9 @@ def operar(argins, ope1, ope2):
     elif argins == 'SUB':
         sub(ope1)
     elif argins == 'LD':
+        #print("Llama a la funcion ld")
         ld(ope1, ope2)
+        print(registros[ope1])
     elif argins == 'PUSH':
         push(ope1)
     elif argins == 'EX':
@@ -566,9 +571,11 @@ def operar(argins, ope1, ope2):
 
 
 def show_z80():
+    global printlist
     if len(printlist)>0 and printlist[0]==0:
         return printlist
     else:
+        printlist=[]
         printlist.append(1)
         printlist.append(registros['A'])
         printlist.append(registros['B'])

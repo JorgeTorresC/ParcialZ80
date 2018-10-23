@@ -39,7 +39,11 @@ class Aplicacion():
         global instruccion
         instruccion = self.into.get()
         limp = "                           "
-        lblsaludar = Label(text = limp).place(x = 18, y = 50)
+        lbllimpiar1 = Label(text = limp).place(x = 18, y = 50)
+        lbllimpiar2 = Label(text = limp).place(x = 18, y = 70)
+        lbllimpiar3 = Label(text = limp).place(x = 18, y = 90)
+        lbllimpiar4 = Label(text = limp).place(x = 18, y = 110)
+        lbllimpiar5 = Label(text = limp).place(x = 18, y = 130)
         lbl = Label(text = 'Comando: ' + instruccion,
         bg = 'grey').place(x = 18, y = 50)
         #print(type(instruccion))
