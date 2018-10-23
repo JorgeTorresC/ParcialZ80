@@ -26,7 +26,7 @@ def enlazador(dic1, dic2, ins):
         if ins[0] in dic1:
             if len(ins) == 1:
                 respuesta.append(1) # Flag en True
-                respuesta.append(ins) # Opcode
+                respuesta.append(ins[0]) # Opcode
                 return respuesta
 
             #Instruccion argumento 2

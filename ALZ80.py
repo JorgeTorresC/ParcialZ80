@@ -66,6 +66,7 @@ dicPalabrasreservadas = {
     'OUT':'OUT',
     'OUTD':'OUTD',
     'OUTI':'OUTI',
+    'OUTI':'OUTI',
     'POP':'POP',
     'PUSH':'PUSH',
     'RES':'RES',
@@ -227,18 +228,3 @@ def lector (linea):
         l.append(string_Temporal)
         string_Temporal = ''
     return l
-
-#Main del programa
-
-
-"""
-f = sys.stdin.readlines()
-for line in f:
-    itx = list()
-    linea = line
-    l=lector(linea)
-    #print(l)
-    if Lexema(l) == -1:
-        break
-    print(itx, len(itx))
-"""

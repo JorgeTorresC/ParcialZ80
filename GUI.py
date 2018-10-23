@@ -38,7 +38,7 @@ class Aplicacion():
     def verCOMANDO(self):
         global instruccion
         instruccion = self.into.get()
-        limp = "                           "
+        limp = "                                             "
         lbllimpiar1 = Label(text = limp).place(x = 18, y = 50)
         lbllimpiar2 = Label(text = limp).place(x = 18, y = 70)
         lbllimpiar3 = Label(text = limp).place(x = 18, y = 90)
@@ -53,9 +53,9 @@ class Aplicacion():
         if len(lprint)==2:
             l1 = Label(text = str(lprint[1])).place(x = 18, y = 70)
         else:
-            l1 = Label(text = str(lprint[1])).place(x = 18, y = 90)
-            l2 = Label(text = str(lprint[2])).place(x = 18, y = 110)
-            l3 = Label(text = str(lprint[3])).place(x = 18, y = 130)
+            l1 = Label(text = str(lprint[1])).place(x = 18, y = 70)
+            l2 = Label(text = str(lprint[2])).place(x = 18, y = 90)
+            l3 = Label(text = str(lprint[3])).place(x = 18, y = 110)
 
 #Main_temp
 def main():

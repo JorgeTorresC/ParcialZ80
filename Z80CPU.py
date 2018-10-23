@@ -100,7 +100,7 @@ def inc(opA):
     if len(varInc) == 8:
         aux = int(varInc,2) + int('1',2)
         varInc = Rell_Zeros(bin(aux))
-        registros[apA] = varInc
+        registros[opA] = varInc
     elif len(varInc) == 16:
         p1 = varInc[0:8]
         P2 = varInc[8:16]
@@ -113,7 +113,7 @@ def inc(opA):
             p2 = Rell_Zeros(bin(aux))
         varInc = ''
         varInc = p1 + p2
-        registros[apA] = varInc
+        registros[opA] = varInc
     #F[6]='0'
     #F[5]='1'
     # TODO: Cuadrar los flags
@@ -123,7 +123,7 @@ def dec(opA):
     if len(varDec) == 8:
         aux = int(varDec,2) - int('1',2)
         varDec = Rell_Zeros(bin(aux))
-        registros[apA] = varDec
+        registros[opA] = varDec
     elif len(varDec) == 16:
         p1 = varDec[0:8]
         P2 = varDec[8:16]
@@ -136,7 +136,7 @@ def dec(opA):
             p2 = Rell_Zeros(bin(aux))
         varDec = ''
         varDec = p1 + p2
-        registros[apA] = varDec
+        registros[opA] = varDec
     #F[6]='0'
     #F[5]='1'
     # TODO: Cuadrar los flags
@@ -286,23 +286,23 @@ def sub(arg1):
     ALU('010', value)
 
 def rlca():
-    aux = registros[A]
+    aux = registros['A']
     corr = aux[1:8] + aux[0]
-    registros[A] = corr
+    registros['A'] = corr
     #aux[1] = F[7]
 
 def rrca():
-    aux = registros[A]
+    aux = registros['A']
     corr = aux[7] + aux[0:7]
-    registros[A] = aux
+    registros['A'] = aux
     #aux[1] = F[7]
 
 def rla():
     global F
-    aux = registros[A]
+    aux = registros['A']
     corr = aux[1:8] + F[7]
     F[7] = aux[0]
-    registros[A] = corr
+    registros['A'] = corr
 
 def pop(arg):
     ld(arg, 'SP')
@@ -315,12 +315,12 @@ def update():
     registros['BC'] = registros['B'] + registros['C']
     registros['DE'] = registros['D'] + registros['E']
     registros['HL'] = registros['H'] + registros['L']
-    registros['AF'] = registros['A'] + F
+    registros['AF'] = registros['A'] + str(F)
 
     registros['BC_p'] = registros['B_p'] + registros['C_p']
     registros['DE_p'] = registros['D_p'] + registros['E_p']
     registros['HL_p'] = registros['H_p'] + registros['L_p']
-    registros['AF_p'] = registros['A_p'] + F_p
+    registros['AF_p'] = registros['A_p'] + str(F_p)
 
 def execute(instr):
     x = instr[0:2]  #Opcode
@@ -610,6 +610,7 @@ dicFunciones = {
      'INDR':'INDR',
      'INI':'INI',
      'INIR':'INIR',
+     'INPUT':'INPUT',
      'JP':'JP',
      'JR':'JR',
      'LD':'ld',

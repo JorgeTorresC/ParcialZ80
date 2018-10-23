@@ -18,8 +18,9 @@ def start_ins(ins):
     itx = list()
     l = ALZ80.lector(ins)
     #print(itx, len(itx))
+    print(l)
     ALZ80.Lexema(l, itx)
-    #print (itx)
+    print ("ITX",itx)
     LToCpu = EnlzCarg.enlazador(dicFunciones, registros, itx)
     print(LToCpu)
     if LToCpu[0] == 0:
@@ -28,8 +29,9 @@ def start_ins(ins):
         return toUser
     else:
         if len(LToCpu) == 3:
-
             operar(LToCpu[1],LToCpu[2],'')
+        elif len(LToCpu) == 2:
+            operar(LToCpu[1],'','')
         else:
             print("paso por aquí")
             operar(LToCpu[1],LToCpu[2],LToCpu[3])
