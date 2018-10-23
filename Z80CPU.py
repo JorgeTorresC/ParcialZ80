@@ -91,6 +91,7 @@ def inc(opA):
         registros[apA] = varInc
     #F[6]='0'
     #F[5]='1'
+    # TODO: Cuadrar los flags
 
 def dec(opA):
     varDec = registros[opA]
@@ -140,7 +141,8 @@ def exx():
 # es la que hace uso de los Flags, segun la operacion que
 # este realizando.
 
-# Los operandos de la ALU son el registro 'A', que es el Acumulador
+# Los operandos de la ALU son el registro 'A', cuendo son 8 bits que es el Acumulador
+# y el registro 'HL' cuando son operaciones de 16 bits
 # y el byte que se le pase en el segundo parametro.
 
 #NOTA: Dado que el resultado de la operacion de la ALU se guarda
@@ -155,7 +157,7 @@ def exx():
 
 def ALU(arg1, arg2):
     global F
-    op1 = registros['A']
+    op1 = registros['A'] if len(arg2) == 8 else registros['HL']
     op2 = arg2
 
     #Suma Binaria
@@ -239,42 +241,8 @@ def ALU(arg1, arg2):
     F[1] = '1' if '1' not in aux else '0'
 
 
-def add(opA, opB):
-    varA = registros[opA]
-    varB = registros[opB]
-    if len(varA) == 8 and len(varB) == 8:
-        aux = int(varA,2) + int(varB,2)
-        varA = Rell_Zeros(bin(aux))
-        registros[apA] = varA
-    elif len(varA) == 16 len(varB) == 8:
-        p1 = varA[0:8]
-        P2 = varA[8:16]
-        aux1 = int(p2,2) + int(varB,2)
-        p2 = Rell_Zeros(bin(aux1))
-        aux2 = int(p1,2) + int('1',2)
-        p1 = Rell_Zeros(bin(aux2))
-        varA = ''
-        varA = p1 + p2
-        registros[apA] = varA
-    elif len(varA) == 16 len(varB) == 16:
-        p1 = varA[0:8]
-        P2 = varA[8:16]
-        q1 = varB[0:8]
-        q2 = varB[8:16]
-        aux1 = int(p2,2) + int(q2,2)
-        if aux1 > 255:
-            p2 = Rell_Zeros(bin(aux1))
-            aux2 = int(p1,2) + int('1',2)
-            aux2 = aux2 + int(q1,2)
-            p1 = Rell_Zeros(bin(aux2))
-        else:
-            p2 = Rell_Zeros(bin(aux1))
-            aux2 = aux2 + int(q1,2)
-            p1 = Rell_Zeros(bin(aux2))
-        varA = ''
-        varA = p1 + p2
-        registros[apA] = varA
-        #hacer update para apA de 16 bits
+def add(arg1):
+    ALU('000', arg1)
 
 def rlca():
     aux = registros[A]
@@ -341,13 +309,13 @@ def execute(instr):
                 ld(letters[y], byte2)
             if q == '1':
                 if p == '00':
-                    add('HL', 'BC')
+                    add('BC')
                 if p == '01':
-                    add('HL', 'DE')
+                    add('DE')
                 if p == '10':
-                    add('HL', 'HL')
+                    add('HL')
                 if p == '11':
-                    add('HL', 'SP')
+                    add('SP')
 
         # Indirect loading
         if z == '010':
@@ -406,7 +374,6 @@ def execute(instr):
     if x == '11':
         if z == '000':
             a=0 #solo para dejar compilar
-            # ALU(y, registros[ letters[z] ])
 
         if z == '001':
             if q == '0':
@@ -448,6 +415,8 @@ def execute(instr):
                     push('HL')
                 if p == '11':
                     push('AF')
+            if q == '1':
+                a=0 #solo para dejar compilar
 
         if z == '110':
             ALU(y, byte2)
@@ -485,7 +454,7 @@ arg1,arg2 = '',''
 
 dicFunciones = {
     'ADC':'ADC',
-    'ADD':add(arg1, arg2),
+    'ADD':add(arg1),
     'AND':'AND',
     'BIT':'BIT',
     'CALL':'CALL',
