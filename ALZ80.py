@@ -228,3 +228,20 @@ def lector (linea):
         l.append(string_Temporal)
         string_Temporal = ''
     return l
+
+# En caso de prueba individual descomentar la siguiente parte y seguir
+# las instrucciones del Readme
+"""
+#Main ALZ80
+
+f=sys.stdin.readlines()
+for line in f:
+    itx=list()
+    linea=line
+    l=lector(linea)
+    #print("retorno de lector", l)
+    if Lexema(l, itx) == -1:
+        break
+    print("Lexemas capturados",itx)
+
+"""

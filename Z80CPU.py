@@ -482,49 +482,6 @@ def print_memory():
     for port in memory:
         print( port, ':', memory[port])
 
-"""
-# Ejercicios
-# 1. Cargue el numero F2H y 68H en los registros B y C respectivamente
-print('Ejercicio 1:')
-memory['0000000000000000'] = '11110010'
-memory['0000000000000001'] = '01101000'
-input('B', '0000000000000000')
-input('C', '0000000000000001')
-print_registers()
-
-# 2. Almacene A2H en la locacion de memoria 2065H
-print( '\n Ejercicio 2:')
-port1 = bin_trasnform('2065') # TODO: Pulir
-memory[port1] = '10100010'
-
-# 3. Reste el 68H de F2H
-print( '\n Ejercicio 3:')
-ld('A', 'C')
-sub('B')
-print_registers()
-
-# 4. Complemente a 1's el resultado
-print( '\n Ejercicio 4:')
-cpl()
-print_registers()
-
-#5. Sume A2H desde la memoria
-print( '\n Ejercicio 5:')
-input('D', port1)
-add('D')
-print_registers()
-
-#6. Almacene la respuesta final en la locacion de memoria 2066
-port2 = bin_trasnform('2066')
-memory[port2] = registros['A']
-print_memory()
-
-#7. Determine el estado del signo(S), cero(Z) y el carry(C)
-print( 'Signo: ', F[0])
-print( 'Cero: ', F[1])
-print( 'Carry:', F[7])
-
-"""
 
 
 def operar(argins, ope1, ope2):
@@ -651,3 +608,50 @@ dicFunciones = {
      'SUB':'SUB',
      'XOR':'XOR'
 }
+
+# Si desea probar este modulo de manera individual, quite los comentario a la
+# siguiente seccion.
+
+"""
+# Ejercicios
+# 1. Cargue el numero F2H y 68H en los registros B y C respectivamente
+print('Ejercicio 1:')
+memory['0000000000000000'] = '11110010'
+memory['0000000000000001'] = '01101000'
+input('B', '0000000000000000')
+input('C', '0000000000000001')
+print_registers()
+
+# 2. Almacene A2H en la locacion de memoria 2065H
+print( '\n Ejercicio 2:')
+port1 = bin_trasnform('2065') # TODO: Pulir
+memory[port1] = '10100010'
+
+# 3. Reste el 68H de F2H
+print( '\n Ejercicio 3:')
+ld('A', 'C')
+sub('B')
+print_registers()
+
+# 4. Complemente a 1's el resultado
+print( '\n Ejercicio 4:')
+cpl()
+print_registers()
+
+#5. Sume A2H desde la memoria
+print( '\n Ejercicio 5:')
+input('D', port1)
+add('D')
+print_registers()
+
+#6. Almacene la respuesta final en la locacion de memoria 2066
+port2 = bin_trasnform('2066')
+memory[port2] = registros['A']
+print_memory()
+
+#7. Determine el estado del signo(S), cero(Z) y el carry(C)
+print( 'Signo: ', F[0])
+print( 'Cero: ', F[1])
+print( 'Carry:', F[7])
+
+"""
