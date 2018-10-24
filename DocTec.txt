@@ -1,0 +1,47 @@
+# En este archivo encuentra una explicacion del funcionamiento del proyecto
+#
+# Este analizador funciona con 4 modulos principales y dos auxiliares
+# Los modulos se encargan de todo el funcionamiento de las entradas del
+# Procesador y de sus componentes.
+#
+#     GUI : Principal
+#     ALZ80 : Principal
+#     EnlzCarg : Principal
+#     Z80 : Principal
+#     Main : Auxiliar
+#     Funcions : Auxiliar
+#
+# Comenzando por el modulo Auxiliar Main, encargado principalmete por conectar
+# Cada modulo entre si, es el encargado de el paso de información entre modulos,
+# Se le considera auxiliar porque fuera de esto ultimo no hace más.
+#
+# El modulo Funcions contiene, como su nombre lo indica Funciones, estas suelen
+# Ser usadas varias veces dentro de varios modulos. Brinda la facilidad de poder
+# utilizar varias veces la misma funcion sin tener que resescribirla en cada
+# modulo.
+#
+# GUI, es el primer modulo Principal, dado que desde este no solo arrancamos la
+# interfaz grafica con la que el usuario tiene interacción con el programa, si
+# no, que tambien arranca el procesador.
+#
+# El modulo ALZ80 es el encargado de realizar un analisis Lexico de las
+# instrucciones dadas, se encarga de recibir la entrada, clasificar que tokens
+# sirven y que no, descartar los comentarios y devolver una lista con la
+# posible instrucion.
+#
+# Luego de esto en modulo EnlzCarg se encarga de recibir la lista con la posible
+# instruccion y clasificarla, este mira que el opcode sea el correcto, que sea
+# sintacticamente correcta y que el procesador pueda verla en binario. Se
+# puede decir que es un analizador sintactico pequeño, ya que es su principal
+# funcion. Luego de revisar la sintaxis, este envia una segunda lista con el
+# opcode a ejecutar y los valores con los cuales debe trabajar.
+# Si es sintacticamente incorrecto, retorna un aviso para decirle al usuario que
+# no se pudo reconocer el opcode.
+#
+# Z80CPU es el modulo más grande e importante del proyecto, este contiene
+# la memoria usada, los bancos de registros, tambien tiene el ALU del procesador
+# y las instrucciones que puede realizar. Recibe la intruccion verificada tanto
+# por el analizador Lexico y el sintactico, se encarga de clasificarla,
+# mover registros, administrar la memoria y operar los valores binarios
+# como se le es indicado.
+#

@@ -500,7 +500,7 @@ def operar(argins, ope1, ope2):
     elif argins == 'LD':
         #print("Llama a la funcion ld")
         ld(ope1, ope2)
-        print(registros[ope1])
+        #print(registros[ope1])
     elif argins == 'PUSH':
         push(ope1)
     elif argins == 'EX':
@@ -534,9 +534,14 @@ def show_z80():
     else:
         printlist=[]
         printlist.append(1)
+        printlist.append(F)
         printlist.append(registros['A'])
         printlist.append(registros['B'])
-        printlist.append(F)
+        printlist.append(registros['C'])
+        printlist.append(registros['D'])
+        printlist.append(registros['E'])
+        printlist.append(registros['H'])
+        printlist.append(registros['L'])
         return printlist
 
 dicFunciones = {

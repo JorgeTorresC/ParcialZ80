@@ -61,6 +61,42 @@ python Z80CPU.py
 
 ## Ejecutando las pruebas ⚙️
 
+_Las instrucciones deben darse en letra mayuscula, tanto para instrucciones, como para registros._
+_Tambien deben ir separadas por una coma ',' los operandos. SIEMPRE._
+
+```
+LD A, B
+```
+
+_El software esta diseñado para que admita parentesis y operaciones entre los operandos._
+
+```
+ADD (A + B)
+```
+
+```
+LD A, (A + B)
+```
+
+_Tambien podemos pasar valores en base 2, base 10 y base 16._
+_Para pasar valores en base 2 simplemente tenemos que poner el caracter '%' al principio del numero._
+
+```
+LD A, %10101100
+```
+
+_Para pasar valores en base 16 simplemente tenemos que poner el caracter '$' al principio del numero._
+
+```
+LD A, $2F
+```
+
+_Para pasar valores en base 10 simplemente tenemos que poner el numero y se encargara de transformarlo a su necesidad._
+
+```
+LD A, 15
+```
+
 _Inicialmente tenemos los archivo TestALZ80 y TestALZ80_2 para darnos una idea de los
 comandos que Recibe el programa, pero si con esto no queda claro, tambien podemos
 remitirnos a:_
@@ -88,3 +124,5 @@ _Menciona las herramientas que utilizaste para crear tu proyecto_
 * **Jorge Torres** -  [JorgeTorresC](https://github.com/JorgeTorresC/)
 
 También puedes mirar la lista de todos los [contribuyentes](https://github.com/your/project/contributors) quíenes han participado en este proyecto.
+
+_Para información más detallada del funcionamiento, vaya a DocTec.txt ._
